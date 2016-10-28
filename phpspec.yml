@@ -1,0 +1,4 @@
+suites:
+    domain:
+        namespace: Aleherse\Datasheet
+        psr4_prefix: Aleherse\Datasheet
