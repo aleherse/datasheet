@@ -1,17 +1,16 @@
 <?php
 
-namespace Aleherse\Datasheet\Bridge\Symfony\DependencyInjection;
+namespace Arkschools\DataInputSheet\Bridge\Symfony\DependencyInjection;
 
-use Aleherse\Datasheet\DatasheetRepository;
+use Arkschools\DataInputSheet\DataInputSheetRepository;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
-use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
-class DatasheetExtension extends Extension
+class DataInputSheetExtension extends Extension
 {
     /**
      * {@inheritdoc}
@@ -23,7 +22,10 @@ class DatasheetExtension extends Extension
         $config = $processor->processConfiguration($configuration, $configs);
 
         $container->addDefinitions([
-            'aleherse.datasheet_repository' => new Definition(DatasheetRepository::class, [$config])
+            'arkschools.repository.data_input_sheet' => new Definition(DataInputSheetRepository::class, [$config])
         ]);
+
+        $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+        $loader->load('services.yml');
     }
 }

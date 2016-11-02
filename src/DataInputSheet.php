@@ -1,8 +1,8 @@
 <?php
 
-namespace Aleherse\Datasheet;
+namespace Arkschools\DataInputSheet;
 
-class Datasheet
+class DataInputSheet
 {
     /**
      * @var string
@@ -15,25 +15,25 @@ class Datasheet
     private $name;
 
     /**
-     * @var DatasheetStub
+     * @var Spine
      */
-    private $stub;
+    private $spine;
 
     /**
-     * @var DatasheetView[]
+     * @var View[]
      */
     private $views;
 
     /**
-     * Datasheet constructor.
+     * DataInputSheet constructor.
      *
      * @param                 $name
-     * @param DatasheetStub   $stub
-     * @param DatasheetView[] $views
+     * @param Spine   $spine
+     * @param View[] $views
      */
-    public function __construct($name, DatasheetStub $stub, array $views)
+    public function __construct($name, Spine $spine, array $views)
     {
-        $this->stub = $stub;
+        $this->spine = $spine;
         $this->id = \slugifier\slugify($name);
         $this->name = $name;
 
@@ -62,13 +62,13 @@ class Datasheet
     /**
      * @return string[]
      */
-    public function getStub()
+    public function getSpine()
     {
-        return $this->stub->getStub();
+        return $this->spine->getSpine();
     }
 
     /**
-     * @return DatasheetView[]
+     * @return View[]
      */
     public function getViews()
     {
@@ -78,7 +78,7 @@ class Datasheet
     /**
      * @param string $viewId
      *
-     * @return DatasheetView|null
+     * @return View|null
      */
     public function getView($viewId)
     {

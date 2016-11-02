@@ -1,8 +1,8 @@
 <?php
 
-namespace Aleherse\Datasheet;
+namespace Arkschools\DataInputSheet;
 
-class DatasheetStub
+class Spine
 {
     /**
      * @var string
@@ -12,12 +12,12 @@ class DatasheetStub
     /**
      * @var string[]
      */
-    protected $stub;
+    protected $spine;
 
-    public function __construct($header, array $stub)
+    public function __construct($header, array $spine)
     {
         $this->header = $header;
-        $this->stub = $stub;
+        $this->spine = $spine;
     }
 
     /**
@@ -31,8 +31,8 @@ class DatasheetStub
     /**
      * @return string[]
      */
-    public function getStub()
+    public function getSpine()
     {
-        return $this->stub;
+        return $this->spine;
     }
 }

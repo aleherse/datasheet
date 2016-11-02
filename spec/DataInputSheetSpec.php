@@ -1,19 +1,18 @@
 <?php
 
-namespace spec\Aleherse\Datasheet;
+namespace spec\Arkschools\DataInputSheet;
 
-use Aleherse\Datasheet\ActorsDatasheet;
-use Aleherse\Datasheet\DatasheetStub;
-use Aleherse\Datasheet\DatasheetView;
+use Arkschools\DataInputSheet\Spine;
+use Arkschools\DataInputSheet\View;
 use PhpSpec\ObjectBehavior;
 
-class DatasheetSpec extends ObjectBehavior
+class DataInputSheetSpec extends ObjectBehavior
 {
-    function let(DatasheetStub $stub, DatasheetView $brand, DatasheetView $drive)
+    function let(Spine $spine, View $brand, View $drive)
     {
         $brand->getId()->willReturn('brand');
         $drive->getId()->willReturn('drive');
-        $stub->getStub()->willReturn([
+        $spine->getSpine()->willReturn([
             'Lexus IS 200 1999 - 2005',
             'Audi 80 1.6 E 1992 - 1994',
             'Hyundai i20 1.25 i-Motion 2010 - 2012',
@@ -21,7 +20,7 @@ class DatasheetSpec extends ObjectBehavior
             'Hyundai i40 1.6 GDI Blue i-Motion 2011 - 2014'
         ]);
 
-        $this->beConstructedWith('cars', $stub, [$brand, $drive]);
+        $this->beConstructedWith('cars', $spine, [$brand, $drive]);
     }
 
     function it_has_an_id()
@@ -35,9 +34,9 @@ class DatasheetSpec extends ObjectBehavior
         $this->getName()->shouldReturn('cars');
     }
 
-    function it_has_stub_data()
+    function it_has_spine_data()
     {
-        $this->getStub()->shouldReturn([
+        $this->getSpine()->shouldReturn([
             'Lexus IS 200 1999 - 2005',
             'Audi 80 1.6 E 1992 - 1994',
             'Hyundai i20 1.25 i-Motion 2010 - 2012',
@@ -46,12 +45,12 @@ class DatasheetSpec extends ObjectBehavior
         ]);
     }
 
-    function it_has_different_collections_of_views(DatasheetView $brand, DatasheetView $drive)
+    function it_has_different_collections_of_views(View $brand, View $drive)
     {
         $this->getViews()->shouldReturn([$brand, $drive]);
     }
 
-    function it_retrieves_a_view_by_id(DatasheetView $brand)
+    function it_retrieves_a_view_by_id(View $brand)
     {
         $this->getView('brand')->shouldReturn($brand);
     }

@@ -1,11 +1,11 @@
 <?php
 
-namespace Aleherse\Datasheet;
+namespace Arkschools\DataInputSheet;
 
-class DatasheetRepository
+class DataInputSheetRepository
 {
     /**
-     * @var Datasheet[]
+     * @var DataInputSheet[]
      */
     private $datasheets;
 
@@ -19,12 +19,12 @@ class DatasheetRepository
         $this->config = $config;
     }
 
-    public function addStub(DatasheetStub $stub, $datasheetId)
+    public function addSpine(Spine $spine, $datasheetId)
     {
         if (isset($this->config[$datasheetId])) {
             $columns = [];
             foreach ($this->config[$datasheetId]['columns'] as $columnTitle => $columnType) {
-                $columns[$columnTitle] = DatasheetColumn::$columnType($columnTitle);
+                $columns[$columnTitle] = Column::$columnType($columnTitle);
             }
 
             $views = [];
@@ -35,15 +35,15 @@ class DatasheetRepository
                         $viewColumns[] = $columns[$title];
                     }
                 }
-                $views[] = new DatasheetView($viewTitle, $stub, $viewColumns);
+                $views[] = new DataInputSheetView($viewTitle, $spine, $viewColumns);
             }
 
-            $this->datasheets[$datasheetId] = new Datasheet($datasheetId, $stub, $views);
+            $this->datasheets[$datasheetId] = new DataInputSheet($datasheetId, $spine, $views);
         }
     }
 
     /**
-     * @return Datasheet[]
+     * @return DataInputSheet[]
      */
     public function findAll()
     {
@@ -52,7 +52,7 @@ class DatasheetRepository
 
     /**
      * @param string $id
-     * @return Datasheet|null
+     * @return DataInputSheet|null
      */
     public function findById($id)
     {
@@ -67,5 +67,10 @@ class DatasheetRepository
         }
 
         return null;
+    }
+
+    public function save(View $view, $data)
+    {
+
     }
 }

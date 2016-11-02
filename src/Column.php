@@ -1,8 +1,8 @@
 <?php
 
-namespace Aleherse\Datasheet;
+namespace Arkschools\DataInputSheet;
 
-class DatasheetColumn
+class Column
 {
     const INTEGER = 0;
     const DOUBLE = 1;
@@ -34,41 +34,41 @@ class DatasheetColumn
     /**
      * @param string $title
      *
-     * @return DatasheetColumn
+     * @return Column
      */
     public static function integer($title)
     {
-        return new DatasheetColumn($title, self::INTEGER);
+        return new Column($title, self::INTEGER);
     }
 
     /**
      * @param string $title
      *
-     * @return DatasheetColumn
+     * @return Column
      */
     public static function double($title)
     {
-        return new DatasheetColumn($title, self::DOUBLE);
+        return new Column($title, self::DOUBLE);
     }
 
     /**
      * @param string $title
      *
-     * @return DatasheetColumn
+     * @return Column
      */
     public static function string($title)
     {
-        return new DatasheetColumn($title, self::STRING);
+        return new Column($title, self::STRING);
     }
 
     /**
      * @param string $title
      *
-     * @return DatasheetColumn
+     * @return Column
      */
     public static function text($title)
     {
-        return new DatasheetColumn($title, self::TEXT);
+        return new Column($title, self::TEXT);
     }
 
     /**

@@ -1,24 +1,24 @@
 <?php
 
-namespace Aleherse\Datasheet\Bridge\Symfony;
+namespace Arkschools\DataInputSheet\Bridge\Symfony;
 
-use Aleherse\Datasheet\Bridge\Symfony\DependencyInjection\Compiler\ImportDatasheetStubPass;
+use Arkschools\DataInputSheet\Bridge\Symfony\DependencyInjection\Compiler\ImportDataInputSheetSpinePass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 /**
- * DatasheetBundle
+ * DataInputSheetBundle
  *
- * @package    aleherse/datasheet
+ * @package    Arkschools/datasheet
  * @subpackage bridge
  * @author     Alejandro Hernandez
  * @copyright  2016-2017 Alejandro Hernandez
  * @license    http://www.opensource.org/licenses/MIT The MIT License
  */
-class DatasheetBundle extends Bundle
+class DataInputSheetBundle extends Bundle
 {
     public function build(ContainerBuilder $container)
     {
-        $container->addCompilerPass(new ImportDatasheetStubPass());
+        $container->addCompilerPass(new ImportDataInputSheetSpinePass());
     }
 }

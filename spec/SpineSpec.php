@@ -1,10 +1,10 @@
 <?php
 
-namespace spec\Aleherse\Datasheet;
+namespace spec\Arkschools\DataInputSheet;
 
 use PhpSpec\ObjectBehavior;
 
-class DatasheetStubSpec extends ObjectBehavior
+class SpineSpec extends ObjectBehavior
 {
     function let()
     {
@@ -22,9 +22,9 @@ class DatasheetStubSpec extends ObjectBehavior
         $this->getHeader()->shouldReturn('cars');
     }
 
-    function it_has_stub_data()
+    function it_has_spine_data()
     {
-        $this->getStub()->shouldReturn([
+        $this->getSpine()->shouldReturn([
             'Lexus IS 200 1999 - 2005',
             'Audi 80 1.6 E 1992 - 1994',
             'Hyundai i20 1.25 i-Motion 2010 - 2012',

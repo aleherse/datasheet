@@ -1,11 +1,11 @@
 <?php
 
-namespace spec\Aleherse\Datasheet;
+namespace spec\Arkschools\DataInputSheet;
 
-use Aleherse\Datasheet\DatasheetColumn;
+use Arkschools\DataInputSheet\Column;
 use PhpSpec\ObjectBehavior;
 
-class DatasheetColumnSpec extends ObjectBehavior
+class ColumnSpec extends ObjectBehavior
 {
     public function let()
     {
@@ -24,34 +24,34 @@ class DatasheetColumnSpec extends ObjectBehavior
 
     function it_has_a_type()
     {
-        $this->getType()->shouldReturn(DatasheetColumn::INTEGER);
+        $this->getType()->shouldReturn(Column::INTEGER);
     }
 
     function it_has_a_factory_method_by_integer()
     {
         $this->beConstructedThrough('integer', ['Brand name']);
 
-        $this->getType()->shouldReturn(DatasheetColumn::INTEGER);
+        $this->getType()->shouldReturn(Column::INTEGER);
     }
 
     function it_has_a_factory_method_by_double()
     {
         $this->beConstructedThrough('double', ['Brand name']);
 
-        $this->getType()->shouldReturn(DatasheetColumn::DOUBLE);
+        $this->getType()->shouldReturn(Column::DOUBLE);
     }
 
     function it_has_a_factory_method_by_string()
     {
         $this->beConstructedThrough('string', ['Brand name']);
 
-        $this->getType()->shouldReturn(DatasheetColumn::STRING);
+        $this->getType()->shouldReturn(Column::STRING);
     }
 
     function it_has_a_factory_method_by_text()
     {
         $this->beConstructedThrough('text', ['Brand name']);
 
-        $this->getType()->shouldReturn(DatasheetColumn::TEXT);
+        $this->getType()->shouldReturn(Column::TEXT);
     }
 }

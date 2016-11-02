@@ -1,0 +1,5 @@
+services:
+    arkschools.twig.data_input_sheet_cell:
+        class: Arkschools\DataInputSheet\Bridge\Symfony\Twig\DataInputSheetCellExtension
+        tags:
+            - { name: twig.extension }
