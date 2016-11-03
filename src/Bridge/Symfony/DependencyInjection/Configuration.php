@@ -25,33 +25,47 @@ class Configuration implements ConfigurationInterface
          *  Example:
          *
          *  data_input_sheet:
-         *      schools:
-         *          views:
-         *              "Brand and model": ["Brand name", "Model name", "Description"]
-         *              "Performance": ["Brand name", "Top speed", "Acceleration"]
-         *          columns:
-         *              "Brand name": string
-         *              "Model name": string
-         *              "Description": text
-         *              "Top speed": integer
-         *              "Acceleration": double
+         *      config:
+         *          connection: "doctrine.dbal.default_connection"
+         *      sheets:
+         *          schools:
+         *              views:
+         *                  "Brand and model": ["Brand name", "Model name", "Description"]
+         *                  "Performance": ["Brand name", "Top speed", "Acceleration"]
+         *              columns:
+         *                  "Brand name": string
+         *                  "Model name": string
+         *                  "Description": text
+         *                  "Top speed": integer
+         *                  "Acceleration": double
          */
         $rootNode
-            ->useAttributeAsKey('name')
-            ->prototype('array')
             ->children()
-                ->arrayNode('views')
-                    ->prototype('array')
-                        ->prototype('scalar')
+                ->arrayNode('config')
+                    ->children()
+                        ->scalarNode('entity_manager')
+                            ->defaultValue('doctrine.orm.entity_manager')
                         ->end()
                     ->end()
                 ->end()
-                ->arrayNode('columns')
-                    ->prototype('scalar')
-                        ->isRequired()
-                        ->validate()
-                        ->ifNotInArray(array('integer', 'double', 'string', 'text'))
-                            ->thenInvalid('Invalid datasheet column type %s')
+                ->arrayNode('sheets')
+                    ->useAttributeAsKey('name')
+                    ->prototype('array')
+                    ->children()
+                        ->arrayNode('views')
+                            ->prototype('array')
+                                ->prototype('scalar')
+                                ->end()
+                            ->end()
+                        ->end()
+                        ->arrayNode('columns')
+                            ->prototype('scalar')
+                                ->isRequired()
+                                ->validate()
+                                ->ifNotInArray(array('integer', 'double', 'string', 'text'))
+                                    ->thenInvalid('Invalid datasheet column type %s')
+                            ->end()
+                        ->end()
                     ->end()
                 ->end()
             ->end();

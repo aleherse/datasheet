@@ -1,0 +1,16 @@
+Arkschools\DataInputSheet\Bridge\Symfony\Entity\Cell:
+  type: entity
+  table: data_input_sheet_cell
+  id:
+    sheet:
+      type: string
+      column: sheet_id
+    column:
+      type: string
+      column: column_id
+    spine:
+      type: string
+      column: spine_id
+  fields:
+    content:
+      type: text

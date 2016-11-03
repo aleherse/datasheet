@@ -2,6 +2,7 @@
 
 namespace Arkschools\DataInputSheet\Bridge\Symfony\Twig;
 
+use Arkschools\DataInputSheet\Column;
 use Arkschools\DataInputSheet\View;
 
 class DataInputSheetCellExtension extends \Twig_Extension
@@ -13,8 +14,8 @@ class DataInputSheetCellExtension extends \Twig_Extension
     {
         return array(
             new \Twig_SimpleFunction(
-                'datasheetCell',
-                [$this, 'datasheetCell'],
+                'dataInputSheetCell',
+                [$this, 'dataInputSheetCell'],
                 [
                     'is_safe'           => array('html'),
                     'needs_environment' => true,
@@ -31,13 +32,26 @@ class DataInputSheetCellExtension extends \Twig_Extension
      *
      * @return string
      */
-    public function datasheetCell(\Twig_Environment $twig, View $view, $spineId, $columnId)
+    public function dataInputSheetCell(\Twig_Environment $twig, View $view, $columnId, $spineId)
     {
-        //$column = $view->getColumn($columnId);
+        $column = $view->getColumn($columnId);
+        if (null === $column) {
+            return '';
+        }
 
-        return $twig->render('DataInputSheetBundle:extension:data_input_sheet_cell_string.html.twig', [
-            'cell' => $view->getCell($spineId, $columnId)
+        return $twig->render($this->getTemplate($column), [
+            'cell' => $view->getCell($columnId, $spineId)
         ]);
+    }
+
+    protected function getTemplate(Column $column)
+    {
+        switch ($column->getType()) {
+            case Column::TEXT:
+                return 'DataInputSheetBundle:extension:data_input_sheet_cell_textarea.html.twig';
+            default:
+                return 'DataInputSheetBundle:extension:data_input_sheet_cell_input_text.html.twig';
+        }
     }
 
     /**
@@ -45,6 +59,6 @@ class DataInputSheetCellExtension extends \Twig_Extension
      */
     public function getName()
     {
-        return 'datasheetCell';
+        return 'dataInputSheetCell';
     }
 }

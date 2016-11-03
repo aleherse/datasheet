@@ -13,6 +13,9 @@
         "symfony/config": "~2.4|~3.0",
         "symfony/dependency-injection": "~2.4|~3.0",
         "symfony/http-kernel": "~2.4|~3.0",
+        "doctrine/orm": "~2.2,>=2.2.3,<2.5",
+        "doctrine/dbal": "2.5.x-dev",
+        "doctrine/doctrine-bundle": "~1.2",
         "twig/twig": "~1.0"
     },
     "autoload": {

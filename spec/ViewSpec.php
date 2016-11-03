@@ -2,15 +2,19 @@
 
 namespace spec\Arkschools\DataInputSheet;
 
+use Arkschools\DataInputSheet\Bridge\Symfony\Entity\Cell;
 use Arkschools\DataInputSheet\Column;
 use Arkschools\DataInputSheet\Spine;
 use PhpSpec\ObjectBehavior;
 
 class ViewSpec extends ObjectBehavior
 {
-    function let(Spine $spine, Column $brand, Column $model)
+    function let(Spine $spine, Column $brand, Column $model, Cell $cell)
     {
+        $cell->getColumn()->willReturn('brand');
+        $cell->getSpine()->willReturn('renault-11');
         $model->getId()->willReturn('model');
+        $brand->getId()->willReturn('brand');
         $spine->getHeader()->willReturn('Cars');
         $spine->getSpine()->willReturn(
             [
@@ -22,7 +26,7 @@ class ViewSpec extends ObjectBehavior
             ]
         );
 
-        $this->beConstructedWith('Brand and model', $spine, [$brand, $model]);
+        $this->beConstructedWith('cars', 'Brand and model', $spine, [$brand, $model]);
     }
 
     function it_has_an_id()
@@ -55,7 +59,7 @@ class ViewSpec extends ObjectBehavior
 
     function it_has_columns(Column $brand, Column $model)
     {
-        $this->getColumns()->shouldReturn([$brand, $model]);
+        $this->getColumns()->shouldReturn(['brand' => $brand, 'model' => $model]);
     }
 
     function it_retrieves_a_column(Column $model)
@@ -63,14 +67,22 @@ class ViewSpec extends ObjectBehavior
         $this->getColumn('model')->shouldReturn($model);
     }
 
-    function it_has_data_in_cells()
+    function it_has_empty_cells_if_not_previously_loaded()
     {
-        $this->getCell('Lexus-is-200', 'brand')->shouldReturn(
-            [
-                'id'     => 'lexus-is-200-brand',
-                'value'  => null,
-                'custom' => [],
-            ]
-        );
+        $this->getCell('brand', 'lexus-is-200')->shouldBeLike(new Cell('cars', 'brand', 'lexus-is-200', null));
+    }
+
+    function it_loads_existing_cells_into_the_view(Cell $cell)
+    {
+        $this->loadCells([$cell->getWrappedObject()]);
+
+        $this->getCell('brand', 'renault-11')->shouldReturn($cell);
+    }
+
+    function it_checks_if_a_cell_content_has_changed(Cell $cell)
+    {
+        $cell->getContent()->willReturn('original');
+
+        $this->contentChanged('brand', 'renault-11', 'new')->shouldReturn(true);
     }
 }

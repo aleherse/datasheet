@@ -4,8 +4,8 @@ datasheets:
       "Brand and model": ["Brand name", "Model name", "Description"]
       "Performance": ["Brand name", "Top speed", "Acceleration"]
     columns:
-      - "Brand name": string
-      - "Model name": string
-      - "Description": text
-      - "Top speed": integer
-      - "Acceleration": double
+      "Brand name": string
+      "Model name": string
+      "Description": text
+      "Top speed": integer
+      "Acceleration": double

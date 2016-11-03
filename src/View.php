@@ -2,8 +2,15 @@
 
 namespace Arkschools\DataInputSheet;
 
+use Arkschools\DataInputSheet\Bridge\Symfony\Entity\Cell;
+
 class View
 {
+    /**
+     * @var string
+     */
+    private $sheetId;
+
     /**
      * @var string
      */
@@ -20,18 +27,24 @@ class View
     private $spine;
 
     /**
-     * @var array
+     * @var Column[]
      */
     private $columns;
 
-    public function __construct($title, Spine $spine, array $columns)
+    /**
+     * @var Cell[][]
+     */
+    private $cells;
+
+    public function __construct($sheetId, $title, Spine $spine, array $columns)
     {
-        $this->id = \slugifier\slugify($title);
+        $this->sheetId = $sheetId;
+        $this->id    = \slugifier\slugify($title);
         $this->title = $title;
         $this->spine = $spine;
 
-        $this->columns = [];
         /** @var Column $column */
+        $this->columns = [];
         foreach ($columns as $column) {
             $this->columns[$column->getId()] = $column;
         }
@@ -43,6 +56,14 @@ class View
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSheetId()
+    {
+        return $this->sheetId;
     }
 
     /**
@@ -70,30 +91,58 @@ class View
     }
 
     /**
-     * @return array
+     * @return Column[]
      */
     public function getColumns()
     {
-        return array_values($this->columns);
+        return $this->columns;
     }
 
+    /**
+     * @param string $columnId
+     * @return Column
+     */
     public function getColumn($columnId)
     {
         return (isset($this->columns[$columnId])) ? $this->columns[$columnId] : null;
     }
 
     /**
-     * @param string $spineRow
      * @param string $columnId
-     *
-     * @return array
+     * @param string $spineId
+     * @return Cell
      */
-    public function getCell($spineRow, $columnId)
+    public function getCell($columnId, $spineId)
     {
-        return [
-            'id'     => 'lexus-is-200-brand',
-            'value'  => null,
-            'custom' => [],
-        ];
+        if (!isset($this->cells[$columnId][$spineId])) {
+            $this->cells[$columnId][$spineId] = new Cell($this->sheetId, $columnId, $spineId, null);
+        }
+
+        return $this->cells[$columnId][$spineId];
+    }
+
+    /**
+     * @param string $columnId
+     * @param string $spineId
+     * @param string $content
+     * @return bool
+     */
+    public function contentChanged($columnId, $spineId, $content)
+    {
+        return $this->getCell($columnId, $spineId)->getContent() !== $content;
+    }
+
+    /**
+     * @param Cell[] $cells
+     * @return $this
+     */
+    public function loadCells(array $cells)
+    {
+        $this->cells = [];
+        foreach ($cells as $cell) {
+            $this->cells[$cell->getColumn()][$cell->getSpine()] = $cell;
+        }
+
+        return $this;
     }
 }
