@@ -12,5 +12,18 @@ Arkschools\DataInputSheet\Bridge\Symfony\Entity\Cell:
       type: string
       column: spine_id
   fields:
-    content:
+    type:
+      type: smallint
+      column: type
+    contentInteger:
+      type: integer
+      column: content_integer
+      nullable: true
+    contentFloat:
+      type: float
+      column: content_float
+      nullable: true
+    contentString:
       type: text
+      column: content_string
+      nullable: true

@@ -2,6 +2,7 @@
 
 namespace Arkschools\DataInputSheet\Bridge\Symfony\DependencyInjection;
 
+use Arkschools\DataInputSheet\ColumnFactory;
 use Arkschools\DataInputSheet\DataInputSheetRepository;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\Config\FileLocator;
@@ -18,18 +19,29 @@ class DataInputSheetExtension extends Extension
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        $processor = new Processor();
+        $processor     = new Processor();
         $configuration = new Configuration();
-        $config = $processor->processConfiguration($configuration, $configs);
+        $config        = $processor->processConfiguration($configuration, $configs);
+
+        $container->addDefinitions([
+            'arkschools.factory.data_input_sheet_column' => new Definition(
+                ColumnFactory::class,
+                [$config['extra_column_types']]
+            )
+        ]);
 
         $container->addDefinitions([
             'arkschools.repository.data_input_sheet' => new Definition(
                 DataInputSheetRepository::class,
-                [new Reference($config['config']['entity_manager']), $config['sheets']]
+                [
+                    new Reference($config['config']['entity_manager']),
+                    new Reference('arkschools.factory.data_input_sheet_column'),
+                    $config['sheets']
+                ]
             )
         ]);
 
-        $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+        $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.yml');
     }
 }

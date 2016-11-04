@@ -27,10 +27,16 @@ class DataInputSheetRepository
      */
     private $em;
 
-    public function __construct(EntityManager $em, $config)
+    /**
+     * @var ColumnFactory
+     */
+    private $columnFactory;
+
+    public function __construct(EntityManager $em, ColumnFactory $columnFactory, $config)
     {
-        $this->config = $config;
-        $this->em     = $em;
+        $this->em            = $em;
+        $this->columnFactory = $columnFactory;
+        $this->config        = $config;
     }
 
     /**
@@ -42,7 +48,7 @@ class DataInputSheetRepository
         if (isset($this->config[$sheetId])) {
             $columns = [];
             foreach ($this->config[$sheetId]['columns'] as $columnTitle => $columnType) {
-                $columns[$columnTitle] = Column::$columnType($columnTitle);
+                $columns[$columnTitle] = $this->columnFactory->create($columnType, $columnTitle);
             }
 
             $views = [];
@@ -112,17 +118,19 @@ class DataInputSheetRepository
 
     public function save(View $view, $data)
     {
+        $columns = $view->getColumns();
         foreach ($data as $columnId => $spine) {
-            foreach ($spine as $spineId => $content) {
-                $content = trim($content);
-                $content = (empty($content)) ? null : $content;
+            if (isset($columns[$columnId])) {
+                foreach ($spine as $spineId => $content) {
+                    $content = $columns[$columnId]->castCellContent($content);
 
-                if ($view->contentChanged($columnId, $spineId, $content)) {
-                    $cell = $view->getCell($columnId, $spineId);
-                    if (null !== $content) {
-                        $this->em->persist($cell->setContent($content));
-                    } else {
-                        $this->em->remove($cell);
+                    if ($view->contentChanged($columnId, $spineId, $content)) {
+                        $cell = $view->getCell($columnId, $spineId);
+                        if (null !== $content) {
+                            $this->em->persist($cell->setContent($content));
+                        } else {
+                            $this->em->remove($cell);
+                        }
                     }
                 }
             }

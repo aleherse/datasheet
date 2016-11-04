@@ -67,9 +67,11 @@ class ViewSpec extends ObjectBehavior
         $this->getColumn('model')->shouldReturn($model);
     }
 
-    function it_has_empty_cells_if_not_previously_loaded()
+    function it_has_empty_cells_if_not_previously_loaded(Column $brand, Cell $cell)
     {
-        $this->getCell('brand', 'lexus-is-200')->shouldBeLike(new Cell('cars', 'brand', 'lexus-is-200', null));
+        $brand->createCell('cars', 'lexus-is-200')->willReturn($cell);
+
+        $this->getCell('brand', 'lexus-is-200')->shouldReturn($cell);
     }
 
     function it_loads_existing_cells_into_the_view(Cell $cell)
@@ -82,6 +84,8 @@ class ViewSpec extends ObjectBehavior
     function it_checks_if_a_cell_content_has_changed(Cell $cell)
     {
         $cell->getContent()->willReturn('original');
+
+        $this->loadCells([$cell]);
 
         $this->contentChanged('brand', 'renault-11', 'new')->shouldReturn(true);
     }

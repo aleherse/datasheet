@@ -4,6 +4,16 @@ namespace Arkschools\DataInputSheet\Bridge\Symfony\Entity;
 
 class Cell
 {
+    const TYPE_INTEGER = 0;
+    const TYPE_FLOAT = 1;
+    const TYPE_STRING = 2;
+
+    private static $types = [
+        self::TYPE_INTEGER => 'contentInteger',
+        self::TYPE_FLOAT   => 'contentFloat',
+        self::TYPE_STRING  => 'contentString'
+    ];
+
     /**
      * @var string
      */
@@ -22,20 +32,38 @@ class Cell
     /**
      * @var string
      */
-    private $content;
+    private $type;
+
+    /**
+     * @var integer
+     */
+    private $contentInteger;
+
+    /**
+     * @var float
+     */
+    private $contentFloat;
+
+    /**
+     * @var string
+     */
+    private $contentString;
 
     /**
      * @param string $sheet
      * @param string $column
      * @param string $spine
+     * @param $type
      * @param string $content
      */
-    public function __construct($sheet, $column, $spine, $content)
+    public function __construct($sheet, $column, $spine, $type, $content)
     {
-        $this->sheet   = $sheet;
-        $this->column  = $column;
-        $this->spine   = $spine;
-        $this->content = $content;
+        $this->sheet  = $sheet;
+        $this->column = $column;
+        $this->spine  = $spine;
+        $this->type   = $type;
+
+        $this->setContent($content);
     }
 
     /**
@@ -96,11 +124,13 @@ class Cell
     }
 
     /**
-     * @return string
+     * @return mixed
      */
     public function getContent()
     {
-        return $this->content;
+        $variable = self::$types[$this->type];
+
+        return $this->$variable;
     }
 
     /**
@@ -109,7 +139,9 @@ class Cell
      */
     public function setContent($content)
     {
-        $this->content = $content;
+        $variable = self::$types[$this->type];
+
+        $this->$variable = $content;
 
         return $this;
     }

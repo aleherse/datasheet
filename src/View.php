@@ -115,7 +115,7 @@ class View
     public function getCell($columnId, $spineId)
     {
         if (!isset($this->cells[$columnId][$spineId])) {
-            $this->cells[$columnId][$spineId] = new Cell($this->sheetId, $columnId, $spineId, null);
+            $this->cells[$columnId][$spineId] = $this->getColumn($columnId)->createCell($this->sheetId, $spineId);
         }
 
         return $this->cells[$columnId][$spineId];

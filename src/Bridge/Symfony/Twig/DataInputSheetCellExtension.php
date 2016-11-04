@@ -26,9 +26,9 @@ class DataInputSheetCellExtension extends \Twig_Extension
 
     /**
      * @param \Twig_Environment $twig
-     * @param View     $view
-     * @param string            $spineId
-     * @param string            $columnId
+     * @param View $view
+     * @param string $spineId
+     * @param string $columnId
      *
      * @return string
      */
@@ -39,19 +39,10 @@ class DataInputSheetCellExtension extends \Twig_Extension
             return '';
         }
 
-        return $twig->render($this->getTemplate($column), [
-            'cell' => $view->getCell($columnId, $spineId)
+        return $twig->render($column->getTemplate(), [
+            'cell'   => $view->getCell($columnId, $spineId),
+            'column' => $column
         ]);
-    }
-
-    protected function getTemplate(Column $column)
-    {
-        switch ($column->getType()) {
-            case Column::TEXT:
-                return 'DataInputSheetBundle:extension:data_input_sheet_cell_textarea.html.twig';
-            default:
-                return 'DataInputSheetBundle:extension:data_input_sheet_cell_input_text.html.twig';
-        }
     }
 
     /**

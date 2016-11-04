@@ -27,6 +27,8 @@ class Configuration implements ConfigurationInterface
          *  data_input_sheet:
          *      config:
          *          connection: "doctrine.dbal.default_connection"
+         *      extra_column_types:
+         *          color: AppBundle/DataInputSheet/ColumnType/Color
          *      sheets:
          *          schools:
          *              views:
@@ -42,11 +44,17 @@ class Configuration implements ConfigurationInterface
         $rootNode
             ->children()
                 ->arrayNode('config')
+                ->addDefaultsIfNotSet()
                     ->children()
                         ->scalarNode('entity_manager')
                             ->defaultValue('doctrine.orm.entity_manager')
                         ->end()
                     ->end()
+                ->end()
+                ->arrayNode('extra_column_types')
+                ->useAttributeAsKey('name')
+                ->defaultValue([])
+                    ->prototype('scalar')->end()
                 ->end()
                 ->arrayNode('sheets')
                     ->useAttributeAsKey('name')
@@ -54,17 +62,11 @@ class Configuration implements ConfigurationInterface
                     ->children()
                         ->arrayNode('views')
                             ->prototype('array')
-                                ->prototype('scalar')
-                                ->end()
+                                ->prototype('scalar')->end()
                             ->end()
                         ->end()
                         ->arrayNode('columns')
-                            ->prototype('scalar')
-                                ->isRequired()
-                                ->validate()
-                                ->ifNotInArray(array('integer', 'double', 'string', 'text'))
-                                    ->thenInvalid('Invalid datasheet column type %s')
-                            ->end()
+                            ->prototype('scalar')->end()
                         ->end()
                     ->end()
                 ->end()
