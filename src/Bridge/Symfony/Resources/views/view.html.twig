@@ -1,0 +1,38 @@
+<div class="container-fluid clearfix">
+    <div class="page-header">
+        <h1>Data Input Sheet {{ view.title }}</h1>
+    </div>
+
+    {% for flashMessage in app.session.flashbag.get('success') %}
+        <div class="alert alert-success alert-dismissible">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <i class="fa fa-check" aria-hidden="true"></i> {{ flashMessage | nl2br }}
+        </div>
+    {% endfor %}
+
+    <form name="data-input-sheet-form" method="post">
+        <table id="data-input-sheet-table" class="table table-nonfluid">
+            <thead>
+            <tr>
+                <th>{{ view.spineHeader }}</th>
+                {% for column in view.columns %}
+                    <th>{{ column.title }}</th>
+                {% endfor %}
+            </tr>
+            </thead>
+            <tbody>
+            {% for spineId, spineRow in view.spine %}
+                <tr>
+                    <td>{{ spineRow }}</td>
+                    {% for column in view.columns %}
+                        <td class="center">
+                            {{ dataInputSheetCell(view, column.id, spineId) }}
+                        </td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <button type="submit" class="btn btn-success" value="Save">Save</button>
+    </form>
+</div>

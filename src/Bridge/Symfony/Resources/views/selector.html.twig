@@ -1,0 +1,47 @@
+<div class="container-fluid clearfix">
+    <div class="page-header">
+        <h1>Data Input Sheet Selector</h1>
+    </div>
+
+    {% for flashMessage in app.session.flashbag.get('success') %}
+        <div class="alert alert-success alert-dismissible">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <i class="fa fa-check" aria-hidden="true"></i> {{ flashMessage | nl2br }}
+        </div>
+    {% endfor %}
+
+    <div id="data-input-sheet-holder">
+        <div id="data-input-sheets" class="row">
+            {% for sheet in sheets %}
+                <div class="col-lg-3">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">{{ sheet.name }}</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="col-lg-3">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <h3 class="panel-title">{{ name }}</h3>
+                                    </div>
+                                    <div class="panel-body">
+                                        <a href="{{ path('marksheets_show_students', { 'marksheet': id }) }}" class="view-marksheet">View</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <ul>
+                                {% for viewId, viewTitle in sheet.views %}
+                                    <li>{{ viewTitle }} <a href="{{ path('data_input_sheet_view', { 'sheetId': sheet.id, 'viewId': viewId }) }}" class="view-marksheet">View</a></li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="col-xs-12">
+                    <p>There are currently no data input sheets</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>

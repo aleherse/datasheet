@@ -66,7 +66,7 @@ class DataInputSheetRepository
                 $views[$viewId]                 = $viewTitle;
             }
 
-            $this->sheets[$sheetId] = new Sheet($sheetId, $views);
+            $this->sheets[$sheetId] = new Sheet($spine->getHeader(), $views);
         }
     }
 
