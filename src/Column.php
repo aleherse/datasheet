@@ -69,7 +69,8 @@ abstract class Column
      */
     public function castCellContent($content)
     {
-        if (empty($content)) {
+        $content = trim($content);
+        if (empty($content) && !is_numeric($content)) {
             return null;
         }
 
