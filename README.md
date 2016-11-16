@@ -51,11 +51,11 @@ data_input_sheet:
         "Color": color
 ```
 
-`config` and `extra_column_types` are optional sections
-`extra_column_types` allows to extend the library with new column types
-Create one sheet per custom data origin
-Create as many views as required, columns can belong to several views
-Create all the needed columns for the sheet and set the appropriate type of each one, base types are "string", "text", "integer" and "float"
+* `config` and `extra_column_types` are optional sections
+* `extra_column_types` allows to extend the library with new column types
+* Create one sheet per custom data origin
+* Create as many views as required, columns can belong to several views
+* Create all the needed columns for the sheet and set the appropriate type of each one, base types are "string", "text", "integer" and "float"
 
 ### Create the spine service
 
@@ -68,8 +68,8 @@ Create all the needed columns for the sheet and set the appropriate type of each
             - { name: data_input_sheet.spine, sheet: cars }
 ```
 
-The tag `data_input_sheet.spine` marks the service as a data input sheet spine and the `sheet` attribute links it with the configured sheet 
-The spine class has to extend `Arkschools\DataInputSheet\Spine` and add the logic for `getSpine` and `getHeader`
+* The tag `data_input_sheet.spine` marks the service as a data input sheet spine and the `sheet` attribute links it with the configured sheet 
+* The spine class has to extend `Arkschools\DataInputSheet\Spine` and add the logic for `getSpine` and `getHeader`
 
 ### Update your database schema
 
