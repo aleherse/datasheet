@@ -26,11 +26,13 @@ class Configuration implements ConfigurationInterface
          *
          *  data_input_sheet:
          *      config:
-         *          connection: "doctrine.dbal.default_connection"
+         *          entity_manager: "doctrine.orm.entity_manager"
          *      extra_column_types:
          *          color: AppBundle/DataInputSheet/ColumnType/Color
          *      sheets:
-         *          schools:
+         *          cars:
+         *              config:
+         *                  table: data_input_sheet_cars
          *              views:
          *                  "Brand and model": ["Brand name", "Model name", "Description"]
          *                  "Performance": ["Brand name", "Top speed", "Acceleration"]
@@ -60,6 +62,14 @@ class Configuration implements ConfigurationInterface
                     ->useAttributeAsKey('name')
                     ->prototype('array')
                     ->children()
+                        ->arrayNode('config')
+                            ->addDefaultsIfNotSet()
+                                ->children()
+                                    ->scalarNode('table')
+                                        ->defaultValue(null)
+                                ->end()
+                            ->end()
+                        ->end()
                         ->arrayNode('views')
                             ->prototype('array')
                                 ->prototype('scalar')->end()

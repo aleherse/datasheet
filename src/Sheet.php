@@ -20,16 +20,23 @@ class Sheet
     private $views;
 
     /**
+     * @var string
+     */
+    private $tableName;
+
+    /**
      * Sheet constructor.
      *
      * @param string $name
      * @param View[] $views
+     * @param string $tableName
      */
-    public function __construct($name, array $views)
+    public function __construct($name, array $views, $tableName = null)
     {
-        $this->id    = \slugifier\slugify($name);
-        $this->name  = $name;
-        $this->views = $views;
+        $this->id        = \slugifier\slugify($name);
+        $this->name      = $name;
+        $this->views     = $views;
+        $this->tableName = $tableName;
     }
 
     /**
@@ -54,5 +61,13 @@ class Sheet
     public function getViews()
     {
         return $this->views;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getTableName()
+    {
+        return $this->tableName;
     }
 }

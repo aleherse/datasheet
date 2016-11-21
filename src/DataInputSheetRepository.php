@@ -66,7 +66,11 @@ class DataInputSheetRepository
                 $views[$viewId]                 = $viewTitle;
             }
 
-            $this->sheets[$sheetId] = new Sheet($spine->getHeader(), $views);
+            $this->sheets[$sheetId] = new Sheet(
+                $spine->getHeader(),
+                $views,
+                $this->config[$sheetId]['config']['table']
+            );
         }
     }
 
@@ -99,6 +103,7 @@ class DataInputSheetRepository
         }
 
         $view = $this->views[$sheetId][$viewId];
+        $this->updateCustomTableName($sheetId);
 
         $cells = $this->em
             ->createQueryBuilder()
@@ -118,6 +123,8 @@ class DataInputSheetRepository
 
     public function save(View $view, $data)
     {
+        $this->updateCustomTableName($view->getSheetId());
+
         $columns = $view->getColumns();
         foreach ($data as $columnId => $spine) {
             if (isset($columns[$columnId])) {
@@ -137,5 +144,16 @@ class DataInputSheetRepository
         }
 
         $this->em->flush();
+    }
+
+    private function updateCustomTableName($sheetId)
+    {
+        $tableName = $this->findById($sheetId)->getTableName();
+
+        if (null !== $tableName) {
+            $this->em
+                ->getClassMetadata(Cell::class)
+                ->setPrimaryTable(['name' => $tableName]);
+        }
     }
 }

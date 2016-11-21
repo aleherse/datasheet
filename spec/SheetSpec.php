@@ -28,4 +28,9 @@ class SheetSpec extends ObjectBehavior
     {
         $this->getViews()->shouldReturn(['brand' => 'Car', 'drive' => 'Drive description']);
     }
+
+    function it_has_a_table_name_if_null_the_default_one_is_used()
+    {
+        $this->getTableName()->shouldReturn(null);
+    }
 }
