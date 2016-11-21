@@ -12,15 +12,15 @@ class ColumnText extends Column
      */
     public function getType()
     {
-        return Column::TEXT;
+        return self::TEXT;
     }
 
     /**
      * @return int
      */
-    public function getCellType()
+    public function getDBType()
     {
-        return Cell::TYPE_STRING;
+        return self::TEXT;
     }
 
     /**

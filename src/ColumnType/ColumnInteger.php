@@ -12,15 +12,15 @@ class ColumnInteger extends Column
      */
     public function getType()
     {
-        return Column::INTEGER;
+        return self::INTEGER;
     }
 
     /**
      * @return int
      */
-    public function getCellType()
+    public function getDBType()
     {
-        return Cell::TYPE_INTEGER;
+        return self::INTEGER;
     }
 
     /**

@@ -2,16 +2,15 @@
 
 namespace Arkschools\DataInputSheet\Bridge\Symfony\Entity;
 
+use Arkschools\DataInputSheet\Column;
+
 class Cell
 {
-    const TYPE_INTEGER = 0;
-    const TYPE_FLOAT = 1;
-    const TYPE_STRING = 2;
-
     private static $types = [
-        self::TYPE_INTEGER => 'contentInteger',
-        self::TYPE_FLOAT   => 'contentFloat',
-        self::TYPE_STRING  => 'contentString'
+        Column::INTEGER => 'contentInteger',
+        Column::FLOAT   => 'contentFloat',
+        Column::STRING  => 'contentString',
+        Column::TEXT    => 'contentText'
     ];
 
     /**
@@ -50,10 +49,15 @@ class Cell
     private $contentString;
 
     /**
+     * @var string
+     */
+    private $contentText;
+
+    /**
      * @param string $sheet
      * @param string $column
      * @param string $spine
-     * @param $type
+     * @param int    $type
      * @param string $content
      */
     public function __construct($sheet, $column, $spine, $type, $content)

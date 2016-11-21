@@ -34,15 +34,15 @@ class ColumnFloatSpec extends ObjectBehavior
         $this->getType()->shouldReturn(Column::FLOAT);
     }
 
-    function it_has_a_cell_type()
+    function it_has_a_DB_type()
     {
-        $this->getCellType()->shouldReturn(Cell::TYPE_FLOAT);
+        $this->getDBType()->shouldReturn(Column::FLOAT);
     }
 
     function it_creates_a_cell()
     {
         $this->createCell('cars', 'Lexus-is-200', 9.5)->shouldBeLike(
-            new Cell('cars', 'acceleration', 'Lexus-is-200', Cell::TYPE_FLOAT, 9.5)
+            new Cell('cars', 'acceleration', 'Lexus-is-200', Column::FLOAT, 9.5)
         );
     }
 }

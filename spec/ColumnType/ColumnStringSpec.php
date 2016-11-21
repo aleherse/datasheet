@@ -22,4 +22,9 @@ class ColumnStringSpec extends ObjectBehavior
     {
         $this->getType()->shouldReturn(Column::STRING);
     }
+
+    function it_has_a_DB_type()
+    {
+        $this->getDBType()->shouldReturn(Column::STRING);
+    }
 }

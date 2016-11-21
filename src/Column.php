@@ -8,8 +8,8 @@ abstract class Column
 {
     const INTEGER = 0;
     const FLOAT = 1;
-    const STRING = 3;
-    const TEXT = 4;
+    const STRING = 2;
+    const TEXT = 3;
 
     /**
      * @var string
@@ -61,7 +61,7 @@ abstract class Column
     /**
      * @return int
      */
-    public abstract function getCellType();
+    public abstract function getDBType();
 
     /**
      * @param string $content
@@ -85,6 +85,6 @@ abstract class Column
      */
     public function createCell($sheetId, $spineId, $content = null)
     {
-        return new Cell($sheetId, $this->id, $spineId, $this->getCellType(), $this->castCellContent($content));
+        return new Cell($sheetId, $this->id, $spineId, $this->getDBType(), $this->castCellContent($content));
     }
 }

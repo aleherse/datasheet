@@ -12,15 +12,15 @@ class ColumnFloat extends Column
      */
     public function getType()
     {
-        return Column::FLOAT;
+        return self::FLOAT;
     }
 
     /**
      * @return int
      */
-    public function getCellType()
+    public function getDBType()
     {
-        return Cell::TYPE_FLOAT;
+        return self::FLOAT;
     }
 
     /**

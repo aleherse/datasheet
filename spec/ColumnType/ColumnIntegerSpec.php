@@ -22,4 +22,9 @@ class ColumnIntegerSpec extends ObjectBehavior
     {
         $this->getType()->shouldReturn(Column::INTEGER);
     }
+
+    function it_has_a_DB_type()
+    {
+        $this->getDBType()->shouldReturn(Column::INTEGER);
+    }
 }

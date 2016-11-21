@@ -14,16 +14,20 @@ Arkschools\DataInputSheet\Bridge\Symfony\Entity\Cell:
   fields:
     type:
       type: smallint
-      column: type
+      column: value_type
     contentInteger:
       type: integer
-      column: content_integer
+      column: value_int
       nullable: true
     contentFloat:
       type: float
-      column: content_float
+      column: value_float
       nullable: true
     contentString:
+      type: string
+      column: value_string
+      nullable: true
+    contentText:
       type: text
-      column: content_string
+      column: value_text
       nullable: true
