@@ -26,6 +26,10 @@ class ViewSpec extends ObjectBehavior
             ]
         );
 
+        $spine->getEntity()->willReturn(null);
+        $spine->getEntitySpineField()->willReturn(null);
+        $spine->getTableName()->willReturn(null);
+
         $this->beConstructedWith('cars', 'Brand and model', $spine, [$brand, $model]);
     }
 
@@ -67,26 +71,8 @@ class ViewSpec extends ObjectBehavior
         $this->getColumn('model')->shouldReturn($model);
     }
 
-    function it_has_empty_cells_if_not_previously_loaded(Column $brand, Cell $cell)
+    function it_has_empty_content_if_not_previously_loaded()
     {
-        $brand->createCell('cars', 'lexus-is-200')->willReturn($cell);
-
-        $this->getCell('brand', 'lexus-is-200')->shouldReturn($cell);
-    }
-
-    function it_loads_existing_cells_into_the_view(Cell $cell)
-    {
-        $this->loadCells([$cell->getWrappedObject()]);
-
-        $this->getCell('brand', 'renault-11')->shouldReturn($cell);
-    }
-
-    function it_checks_if_a_cell_content_has_changed(Cell $cell)
-    {
-        $cell->getContent()->willReturn('original');
-
-        $this->loadCells([$cell]);
-
-        $this->contentChanged('brand', 'renault-11', 'new')->shouldReturn(true);
+        $this->getContent('brand', 'lexus-is-200')->shouldReturn(null);
     }
 }

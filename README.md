@@ -55,7 +55,7 @@ data_input_sheet:
 * `extra_column_types` allows to extend the library with new column types
 * Create one sheet per custom data origin
 * Create as many views as required, columns can belong to several views
-* Create all the needed columns for the sheet and set the appropriate type of each one, base types are "string", "text", "integer" and "float"
+* Create all the needed columns for the sheet and set the appropriate type of each one, base types are "integer", "float", "string" and "text" 
 
 ### Create the spine service
 
@@ -71,7 +71,7 @@ data_input_sheet:
 * The tag `data_input_sheet.spine` marks the service as a data input sheet spine and the `sheet` attribute links it with the configured sheet 
 * The spine class has to extend `Arkschools\DataInputSheet\Spine` and add the logic for `getSpine` and `getHeader`
 
-### Update your database schema
+### Update your database schema 
 
 ```bash
 php bin/console doctrine:schema:update --force
@@ -89,3 +89,55 @@ data_input_sheet:
     resource: "@DataInputSheetBundle/Controller/DataInputSheetController"
     type:     annotation
 ```
+
+## Advanced use cases
+
+Out of the box this library allow user to store the data in a table created by the library, but this behaviour can be changed
+
+### Data stored in library user controlled table
+
+A custom table can be set to store the data input of an specific sheet
+ 
+* Create a table with the same structure as `data_input_sheet_custom_cell`
+* Update the spine `getTableName` method to return your previously created table name
+* From now on that sheet data will be stored in the custom table
+
+### Data stored in library user controlled entity
+
+More control can be obtained setting the entity that will store the data input of an specific sheet 
+
+* Create the desired entity with as many attributes as sheet columns (including one for the spine id)
+* Update the spine `getEntity` method to return the fully qualified entity class name
+* Update the spine `getEntitySpineField` method to return the entity attribute that will store the spine id (by default is `id`)
+* Update the sheet configuration with the entity field linked with each column (example below)
+
+Given the configuration:
+
+```yaml
+# app/config/config.yml
+data_input_sheet:
+  sheets:
+    cars:
+      views:
+        "Brand and model": ["Brand name", "Model name", "Description"]
+      columns:
+        "Brand name":
+            type: string
+            field: brand
+        "Model name":
+            type: string
+            field: model
+        "Description": 
+            type: text
+            field: description
+```
+
+An entity with the fields `id`, `brand`, `model` and `description` is required to store this sheet input data, take in consideration the column types when setting the entity field types 
+
+### Create a custom column type
+
+As explained above new column can be added through the configuration parameter `extra_column_types`
+
+* Extend `Column` abstract class and implement the abstract methods
+* Extend the other methods if required for your implementation
+* Add the newly created class using the `extra_column_types` configuration

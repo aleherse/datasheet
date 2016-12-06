@@ -3,6 +3,9 @@
 namespace Arkschools\DataInputSheet;
 
 use Arkschools\DataInputSheet\Bridge\Symfony\Entity\Cell;
+use Arkschools\DataInputSheet\Bridge\Symfony\Entity\CustomCell;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 class View
 {
@@ -32,16 +35,45 @@ class View
     private $columns;
 
     /**
-     * @var Cell[][]
+     * @var array
      */
-    private $cells;
+    private $objects;
 
-    public function __construct($sheetId, $title, Spine $spine, array $columns)
-    {
-        $this->sheetId = $sheetId;
-        $this->id    = \slugifier\slugify($title);
-        $this->title = $title;
-        $this->spine = $spine;
+    /**
+     * @var mixed
+     */
+    private $contents;
+
+    /**
+     * @var bool
+     */
+    private $useExternalEntity;
+
+    /**
+     * @var bool
+     */
+    private $useCustomTable = false;
+
+    public function __construct(
+        $sheetId,
+        $title,
+        Spine $spine,
+        array $columns
+    ) {
+        $this->sheetId    = $sheetId;
+        $this->id         = \slugifier\slugify($title);
+        $this->title      = $title;
+        $this->spine      = $spine;
+
+        $this->useExternalEntity = false;
+        if (null !== $spine->getEntity()) {
+            $this->useExternalEntity = true;
+        }
+
+        $this->useCustomTable = false;
+        if (null !== $spine->getTableName()) {
+            $this->useCustomTable = true;
+        }
 
         /** @var Column $column */
         $this->columns = [];
@@ -108,41 +140,153 @@ class View
     }
 
     /**
-     * @param string $columnId
      * @param string $spineId
-     * @return Cell
+     * @param string $columnId
+     * @param ClassMetadataInfo $metadata
+     * @return \StdClass
      */
-    public function getCell($columnId, $spineId)
+    private function getObject($spineId, $columnId = null, ClassMetadataInfo $metadata = null)
     {
-        if (!isset($this->cells[$columnId][$spineId])) {
-            $this->cells[$columnId][$spineId] = $this->getColumn($columnId)->createCell($this->sheetId, $spineId);
+        if (!isset($this->objects[$spineId][$columnId])) {
+            if ($this->useExternalEntity) {
+                $this->objects[$spineId][$columnId] = $metadata->newInstance();
+            } else {
+                $this->objects[$spineId][$columnId] = $this->getColumn($columnId)->createCell($this->sheetId, $spineId, null, $this->useCustomTable);
+            }
         }
 
-        return $this->cells[$columnId][$spineId];
+        return $this->objects[$spineId][$columnId];
     }
 
     /**
-     * @param string $columnId
+     * @param $spineId
+     * @param $columnId
+     * @return mixed
+     */
+    public function getContent($spineId, $columnId)
+    {
+        if (isset($this->contents[$spineId][$columnId])) {
+            return $this->contents[$spineId][$columnId];
+        }
+
+        return null;
+    }
+
+    /**
      * @param string $spineId
+     * @param string $columnId
      * @param string $content
      * @return bool
      */
-    public function contentChanged($columnId, $spineId, $content)
+    private function contentChanged($spineId, $columnId, $content)
     {
-        return $this->getCell($columnId, $spineId)->getContent() !== $content;
+        return $this->getContent($spineId, $columnId) !== $content;
     }
 
-    /**
-     * @param Cell[] $cells
-     * @return $this
-     */
-    public function loadCells(array $cells)
+    public function loadContent(EntityManager $em)
     {
-        $this->cells = [];
-        foreach ($cells as $cell) {
-            $this->cells[$cell->getColumn()][$cell->getSpine()] = $cell;
+        if ($this->useExternalEntity) {
+            $objects  = $this->spine->getQueryBuilder($em)->getQuery()->execute();
+            $metadata = $em->getClassMetadata($this->spine->getEntity());
+
+            $this->objects = [];
+            foreach ($objects as $object) {
+                $spineId = $metadata->getFieldValue($object, $this->spine->getEntitySpineField());
+                $this->objects[$spineId][null] = $object;
+                foreach ($this->columns as $column) {
+                    $this->contents[$spineId][$column->getId()] = $metadata->getFieldValue($object, $column->getField());
+                }
+            }
+        } else {
+            $cells = $this->getCells($em);
+
+            $this->objects = [];
+            foreach ($cells as $cell) {
+                $this->objects[$cell->getSpine()][$cell->getColumn()] = $cell;
+                $this->contents[$cell->getSpine()][$cell->getColumn()] = $cell->getContent();
+            }
         }
 
         return $this;
+    }
+
+    public function persist(EntityManager $em, $data)
+    {
+        if ($this->useExternalEntity) {
+            $metadata = $em->getClassMetadata($this->spine->getEntity());
+            foreach ($data as $spineId => $columnsData) {
+                $object  = $this->getObject($spineId, null, $metadata);
+                $persist = false;
+                $metadata->setFieldValue($object, $this->spine->getEntitySpineField(), $spineId);
+                foreach ($columnsData as $columnId => $content) {
+                    $column = $this->getColumn($columnId);
+                    if (null !== $column) {
+                        $content = $column->castCellContent($content);
+                        if ($this->contentChanged($spineId, $columnId, $content)) {
+                            $persist = true;
+                            $metadata->setFieldValue($object, $column->getField(), $content);
+                        }
+                    }
+                }
+
+                if ($persist) {
+                    $em->persist($object);
+                }
+            }
+        } else {
+            if ($this->useCustomTable) {
+                $this->setCustomTableName($em);
+            }
+
+            foreach ($data as $spineId => $columnsData) {
+                foreach ($columnsData as $columnId => $content) {
+                    if (isset($this->columns[$columnId])) {
+                        $content = $this->columns[$columnId]->castCellContent($content);
+
+                        if ($this->contentChanged($spineId, $columnId, $content)) {
+                            /** @var CustomCell $cell */
+                            $cell = $this->getObject($spineId, $columnId);
+                            if (null !== $content) {
+                                $em->persist($cell->setContent($content));
+                            } else {
+                                $em->remove($cell);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private function setCustomTableName(EntityManager $em)
+    {
+        $em
+            ->getClassMetadata(CustomCell::class)
+            ->setPrimaryTable(['name' => $this->spine->getTableName()]);
+    }
+
+    /**
+     * @param EntityManager $em
+     * @return Bridge\Symfony\Entity\CustomCell[]
+     */
+    private function getCells(EntityManager $em)
+    {
+        $query = $em
+            ->createQueryBuilder()
+            ->select('c')
+            ->where('c.column IN (:columns)')
+            ->setParameter('columns', array_keys($this->columns));
+
+        if ($this->useCustomTable) {
+            $this->setCustomTableName($em);
+            $query->from(CustomCell::class, 'c');
+        } else {
+            $query
+                ->from(Cell::class, 'c')
+                ->andWhere('c.sheet = :sheetId')
+                ->setParameter('sheetId', $this->sheetId);
+        }
+
+        return $query->getQuery()->execute();
     }
 }

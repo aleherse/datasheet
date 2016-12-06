@@ -25,12 +25,14 @@ class ColumnFactory
         }
     }
 
-    public function create($type, $title)
+    public function create(array $config, $title)
     {
-        if (isset(self::$types[$type])) {
-            return new self::$types[$type]($title);
+        $field = (isset($config['field'])) ? $config['field'] : null;
+
+        if (isset(self::$types[$config['type']])) {
+            return new self::$types[$config['type']]($title, $field);
         }
 
-        return new self::$types['text']($title);
+        return new self::$types['string']($title, $field);
     }
 }

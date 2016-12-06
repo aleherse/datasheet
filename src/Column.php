@@ -3,6 +3,7 @@
 namespace Arkschools\DataInputSheet;
 
 use Arkschools\DataInputSheet\Bridge\Symfony\Entity\Cell;
+use Arkschools\DataInputSheet\Bridge\Symfony\Entity\CustomCell;
 
 abstract class Column
 {
@@ -26,10 +27,16 @@ abstract class Column
      */
     protected $type;
 
-    public function __construct($title)
+    /**
+     * @var string
+     */
+    private $field;
+
+    public function __construct($title, $field = null)
     {
-        $this->id = \slugifier\slugify($title);
+        $this->id    = \slugifier\slugify($title);
         $this->title = $title;
+        $this->field = $field;
     }
 
     /**
@@ -46,6 +53,14 @@ abstract class Column
     public function getTitle()
     {
         return $this->title;
+    }
+
+    /**
+     * @return string
+     */
+    public function getField()
+    {
+        return $this->field;
     }
 
     /**
@@ -81,10 +96,15 @@ abstract class Column
      * @param string $sheetId
      * @param string $spineId
      * @param mixed $content
-     * @return Cell
+     * @param bool $isCustomCell
+     * @return Cell|CustomCell
      */
-    public function createCell($sheetId, $spineId, $content = null)
+    public function createCell($sheetId, $spineId, $content = null, $isCustomCell = false)
     {
-        return new Cell($sheetId, $this->id, $spineId, $this->getDBType(), $this->castCellContent($content));
+        if ($isCustomCell) {
+            return new CustomCell($this->id, $spineId, $this->getDBType(), $this->castCellContent($content));
+        } else {
+            return new Cell($sheetId, $this->id, $spineId, $this->getDBType(), $this->castCellContent($content));
+        }
     }
 }

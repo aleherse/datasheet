@@ -2,7 +2,10 @@
 
 namespace spec\Arkschools\DataInputSheet;
 
+use Doctrine\DBAL\Query\QueryBuilder;
+use Doctrine\ORM\EntityManager;
 use PhpSpec\ObjectBehavior;
+use Prophecy\Argument;
 
 class SpineSpec extends ObjectBehavior
 {
@@ -31,5 +34,29 @@ class SpineSpec extends ObjectBehavior
             'renault-fluence' => 'Renault Fluence Z.E. Expression 2011 - 2015',
             'hyundai-i40'     => 'Hyundai i40 1.6 GDI Blue i-Motion 2011 - 2014',
         ]);
+    }
+
+    function it_might_have_a_custom_table_name_to_store_the_data()
+    {
+        $this->getTableName()->shouldReturn(null);
+    }
+
+    function it_might_have_a_custom_entity_to_store_the_data()
+    {
+        $this->getEntity()->shouldReturn(null);
+    }
+
+    function it_might_have_a_custom_entity_field_to_store_the_spine_id()
+    {
+        $this->getEntitySpineField()->shouldReturn('id');
+    }
+
+    function it_might_have_a_custom_query_builder(EntityManager $em, QueryBuilder $qb)
+    {
+        $qb->select(Argument::any())->willReturn($qb->getWrappedObject());
+        $qb->from(Argument::cetera())->willReturn($qb->getWrappedObject());
+        $em->createQueryBuilder()->willReturn($qb->getWrappedObject());
+
+        $this->getQueryBuilder($em)->shouldReturn($qb);
     }
 }

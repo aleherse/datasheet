@@ -5,29 +5,3 @@ Arkschools\DataInputSheet\Bridge\Symfony\Entity\Cell:
     sheet:
       type: string
       column: sheet_id
-    column:
-      type: string
-      column: column_id
-    spine:
-      type: string
-      column: spine_id
-  fields:
-    type:
-      type: smallint
-      column: value_type
-    contentInteger:
-      type: integer
-      column: value_int
-      nullable: true
-    contentFloat:
-      type: float
-      column: value_float
-      nullable: true
-    contentString:
-      type: string
-      column: value_string
-      nullable: true
-    contentText:
-      type: text
-      column: value_text
-      nullable: true

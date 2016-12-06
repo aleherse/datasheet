@@ -2,7 +2,6 @@
 
 namespace Arkschools\DataInputSheet;
 
-use Arkschools\DataInputSheet\Bridge\Symfony\Entity\Cell;
 use Doctrine\ORM\EntityManager;
 
 class DataInputSheetRepository
@@ -47,8 +46,8 @@ class DataInputSheetRepository
     {
         if (isset($this->config[$sheetId])) {
             $columns = [];
-            foreach ($this->config[$sheetId]['columns'] as $columnTitle => $columnType) {
-                $columns[$columnTitle] = $this->columnFactory->create($columnType, $columnTitle);
+            foreach ($this->config[$sheetId]['columns'] as $columnTitle => $columnConfig) {
+                $columns[$columnTitle] = $this->columnFactory->create($columnConfig, $columnTitle);
             }
 
             $views = [];
@@ -66,11 +65,7 @@ class DataInputSheetRepository
                 $views[$viewId]                 = $viewTitle;
             }
 
-            $this->sheets[$sheetId] = new Sheet(
-                $spine->getHeader(),
-                $views,
-                $this->config[$sheetId]['config']['table']
-            );
+            $this->sheets[$sheetId] = new Sheet($spine->getHeader(), $views);
         }
     }
 
@@ -103,57 +98,14 @@ class DataInputSheetRepository
         }
 
         $view = $this->views[$sheetId][$viewId];
-        $this->updateCustomTableName($sheetId);
 
-        $cells = $this->em
-            ->createQueryBuilder()
-            ->select('c')
-            ->from(Cell::class, 'c')
-            ->where('c.sheet = :sheetId')
-            ->andWhere('c.column IN (:columns)')
-            ->setParameters([
-                'sheetId' => $sheetId,
-                'columns' => array_keys($view->getColumns())
-            ])
-            ->getQuery()
-            ->execute();
-
-        return $view->loadCells($cells);
+        return $view->loadContent($this->em);
     }
 
     public function save(View $view, $data)
     {
-        $this->updateCustomTableName($view->getSheetId());
-
-        $columns = $view->getColumns();
-        foreach ($data as $columnId => $spine) {
-            if (isset($columns[$columnId])) {
-                foreach ($spine as $spineId => $content) {
-                    $content = $columns[$columnId]->castCellContent($content);
-
-                    if ($view->contentChanged($columnId, $spineId, $content)) {
-                        $cell = $view->getCell($columnId, $spineId);
-                        if (null !== $content) {
-                            $this->em->persist($cell->setContent($content));
-                        } else {
-                            $this->em->remove($cell);
-                        }
-                    }
-                }
-            }
-        }
+        $view->persist($this->em, $data);
 
         $this->em->flush();
-    }
-
-    private function updateCustomTableName($sheetId)
-    {
-        $tableName = $this->findById($sheetId)->getTableName();
-
-        if (null !== $tableName) {
-            $this->em
-                ->getClassMetadata(Cell::class)
-                ->setPrimaryTable(['name' => $tableName]);
-        }
     }
 }

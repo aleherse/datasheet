@@ -3,9 +3,9 @@
 namespace spec\Arkschools\DataInputSheet\ColumnType;
 
 use Arkschools\DataInputSheet\Bridge\Symfony\Entity\Cell;
+use Arkschools\DataInputSheet\Bridge\Symfony\Entity\CustomCell;
 use Arkschools\DataInputSheet\Column;
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 
 class ColumnFloatSpec extends ObjectBehavior
 {
@@ -43,6 +43,13 @@ class ColumnFloatSpec extends ObjectBehavior
     {
         $this->createCell('cars', 'Lexus-is-200', 9.5)->shouldBeLike(
             new Cell('cars', 'acceleration', 'Lexus-is-200', Column::FLOAT, 9.5)
+        );
+    }
+
+    function it_creates_a_custom_cell()
+    {
+        $this->createCell('cars', 'Lexus-is-200', 9.5, true)->shouldBeLike(
+            new CustomCell('acceleration', 'Lexus-is-200', Column::FLOAT, 9.5)
         );
     }
 }
