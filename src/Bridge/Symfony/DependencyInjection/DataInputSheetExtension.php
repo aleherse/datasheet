@@ -9,6 +9,7 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
+use Symfony\Component\DependencyInjection\Parameter;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
@@ -34,9 +35,10 @@ class DataInputSheetExtension extends Extension
             'arkschools.repository.data_input_sheet' => new Definition(
                 DataInputSheetRepository::class,
                 [
-                    new Reference($config['config']['entity_manager']),
+                    new Reference('doctrine'),
                     new Reference('arkschools.factory.data_input_sheet_column'),
-                    $config['sheets']
+                    $config['sheets'],
+                    new Parameter('data_input_sheet.entity_manager_name')
                 ]
             )
         ]);

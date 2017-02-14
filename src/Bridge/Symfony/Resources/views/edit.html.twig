@@ -14,26 +14,22 @@
         <table id="data-input-sheet-table" class="table table-nonfluid">
             <thead>
             <tr>
-                <th>{{ view.spineHeader }}</th>
-                {% for column in view.columns %}
-                    <th>{{ column.title }}</th>
-                {% endfor %}
+                <th class="transparent">{{ view.spineHeader }}</th>
+                <th class="transparent">Column</th>
             </tr>
             </thead>
             <tbody>
-            {% for spineId, spineRow in view.spine %}
-                <tr>
-                    <td><a href="{{ path('data_input_sheet_edit', {'sheetId': view.sheetId, 'viewId': view.id, 'position': loop.index0}) }}">{{ spineRow }}</a></td>
-                    <td>{{ spineRow }}</td>
-                    {% for column in view.columns %}
-                        <td class="center">
-                            {{ dataInputSheetCell(view, column.id, spineId) }}
-                        </td>
-                    {% endfor %}
+            {% for column in view.columns %}
+                <tr class="middle">
+                    <td>{{ column.title }}</td>
+                    <td>{{ dataInputSheetCell(view, column.id, spineId) }}</td>
                 </tr>
             {% endfor %}
             </tbody>
         </table>
-        <button type="submit" class="btn btn-success" value="Save">Save</button>
+        <br/>
+        {%  if position > 0 %}<div><button type="submit" class="btn btn-success" name="submit" value="Previous">Save & Previous</button></div>{% endif %}
+        <div><a class="btn btn-success" href="{{ path('data_input_sheet_view', {'sheetId': view.sheetId, 'viewId': view.id}) }}">Cancel & Back</a></div>
+        {%  if position < view.count - 1 %}<div><button type="submit" class="btn btn-success" name="submit" value="Next">Save & Next</button></div>{% endif %}
     </form>
 </div>

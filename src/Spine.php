@@ -51,13 +51,59 @@ class Spine
     }
 
     /**
+     * @return $this
+     */
+    protected function load()
+    {
+        return $this;
+    }
+
+    /**
      * Array with the spine data
      *
      * @return string[]
      */
     public function getSpine()
     {
-        return $this->spine;
+        return $this->load()->spine;
+    }
+
+    /**
+     * @param string $spineId
+     * @return bool
+     */
+    public function hasSpine($spineId)
+    {
+        return isset($this->load()->spine[$spineId]);
+    }
+
+    /**
+     * @param string $spineId
+     * @return string
+     */
+    public function getSpineFromId($spineId)
+    {
+        return (isset($this->load()->spine[$spineId])) ? $this->spine[$spineId] : '';
+    }
+
+    /**
+     * @param string $position
+     * @return string |null
+     */
+    public function getSpineIdFromPosition($position)
+    {
+        $iterator = new \ArrayIterator($this->load()->spine);
+        $iterator->seek($position);
+
+        return ($iterator->valid()) ? $iterator->key() : null;
+    }
+
+    /**
+     * @return int
+     */
+    public function count()
+    {
+        return count($this->load()->spine);
     }
 
     /**

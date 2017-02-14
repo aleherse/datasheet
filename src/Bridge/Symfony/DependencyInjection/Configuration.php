@@ -25,8 +25,6 @@ class Configuration implements ConfigurationInterface
          *  Example:
          *
          *  data_input_sheet:
-         *      config:
-         *          entity_manager: "doctrine.orm.entity_manager"
          *      extra_column_types:
          *          color: AppBundle/DataInputSheet/ColumnType/Color
          *      sheets:
@@ -45,14 +43,6 @@ class Configuration implements ConfigurationInterface
          */
         $rootNode
             ->children()
-                ->arrayNode('config')
-                ->addDefaultsIfNotSet()
-                    ->children()
-                        ->scalarNode('entity_manager')
-                            ->defaultValue('doctrine.orm.entity_manager')
-                        ->end()
-                    ->end()
-                ->end()
                 ->arrayNode('extra_column_types')
                 ->useAttributeAsKey('name')
                 ->defaultValue([])
