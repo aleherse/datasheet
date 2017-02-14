@@ -3,7 +3,6 @@
 namespace Arkschools\DataInputSheet;
 
 use Arkschools\DataInputSheet\Bridge\Symfony\Entity\Cell;
-use Arkschools\DataInputSheet\Bridge\Symfony\Entity\CustomCell;
 
 abstract class Column
 {
@@ -96,15 +95,10 @@ abstract class Column
      * @param string $sheetId
      * @param string $spineId
      * @param mixed $content
-     * @param bool $isCustomCell
-     * @return Cell|CustomCell
+     * @return Cell
      */
-    public function createCell($sheetId, $spineId, $content = null, $isCustomCell = false)
+    public function createCell($sheetId, $spineId, $content = null)
     {
-        if ($isCustomCell) {
-            return new CustomCell($this->id, $spineId, $this->getDBType(), $this->castCellContent($content));
-        } else {
-            return new Cell($sheetId, $this->id, $spineId, $this->getDBType(), $this->castCellContent($content));
-        }
+        return new Cell($sheetId, $this->id, $spineId, $this->getDBType(), $this->castCellContent($content));
     }
 }

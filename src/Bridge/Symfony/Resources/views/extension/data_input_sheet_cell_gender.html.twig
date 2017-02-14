@@ -1,0 +1,7 @@
+{% spaceless %}
+    <select class="data-input-sheet-input" name="{{ constant('Arkschools\\DataInputSheet\\View::FORM_NAME') }}[{{ spineId }}][{{ columnId }}]">
+        {% for gender in ['', 'M', 'F'] %}
+            <option value="{{ gender }}" {% if content == gender %}selected{% endif %}>{{ gender }}</option>
+        {% endfor %}
+    </select>
+{% endspaceless %}

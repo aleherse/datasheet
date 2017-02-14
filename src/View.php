@@ -3,12 +3,14 @@
 namespace Arkschools\DataInputSheet;
 
 use Arkschools\DataInputSheet\Bridge\Symfony\Entity\Cell;
-use Arkschools\DataInputSheet\Bridge\Symfony\Entity\CustomCell;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Symfony\Component\HttpFoundation\Request;
 
 class View
 {
+    const FORM_NAME = 'DIS';
+
     /**
      * @var string
      */
@@ -123,6 +125,24 @@ class View
     }
 
     /**
+     * @param string $spineId
+     * @return string
+     */
+    public function getSpineFromId($spineId)
+    {
+        return $this->spine->getSpineFromId($spineId);
+    }
+
+    /**
+     * @param integer $position
+     * @return null|string
+     */
+    public function getSpineIdFromPosition($position)
+    {
+        return $this->spine->getSpineIdFromPosition($position);
+    }
+
+    /**
      * @return Column[]
      */
     public function getColumns()
@@ -140,6 +160,15 @@ class View
     }
 
     /**
+     * @param string $columnId
+     * @return bool
+     */
+    public function hasColumn($columnId)
+    {
+        return isset($this->columns[$columnId]);
+    }
+
+    /**
      * @param string $spineId
      * @param string $columnId
      * @param ClassMetadataInfo $metadata
@@ -151,7 +180,7 @@ class View
             if ($this->useExternalEntity) {
                 $this->objects[$spineId][$columnId] = $metadata->newInstance();
             } else {
-                $this->objects[$spineId][$columnId] = $this->getColumn($columnId)->createCell($this->sheetId, $spineId, null, $this->useCustomTable);
+                $this->objects[$spineId][$columnId] = $this->getColumn($columnId)->createCell($this->sheetId, $spineId, null);
             }
         }
 
@@ -174,6 +203,23 @@ class View
 
     /**
      * @param string $spineId
+     * @return bool
+     */
+    public function hasSpine($spineId)
+    {
+        return $this->spine->hasSpine($spineId);
+    }
+
+    /**
+     * @return int
+     */
+    public function count()
+    {
+        return $this->spine->count();
+    }
+
+    /**
+     * @param string $spineId
      * @param string $columnId
      * @param string $content
      * @return bool
@@ -181,6 +227,11 @@ class View
     private function contentChanged($spineId, $columnId, $content)
     {
         return $this->getContent($spineId, $columnId) !== $content;
+    }
+
+    public function extractDataFromRequest(Request $request)
+    {
+        return $request->request->get(self::FORM_NAME, []);
     }
 
     public function loadContent(EntityManager $em)
@@ -244,7 +295,7 @@ class View
                         $content = $this->columns[$columnId]->castCellContent($content);
 
                         if ($this->contentChanged($spineId, $columnId, $content)) {
-                            /** @var CustomCell $cell */
+                            /** @var Cell $cell */
                             $cell = $this->getObject($spineId, $columnId);
                             if (null !== $content) {
                                 $em->persist($cell->setContent($content));
@@ -261,31 +312,32 @@ class View
     private function setCustomTableName(EntityManager $em)
     {
         $em
-            ->getClassMetadata(CustomCell::class)
+            ->getClassMetadata(Cell::class)
             ->setPrimaryTable(['name' => $this->spine->getTableName()]);
     }
 
     /**
      * @param EntityManager $em
-     * @return Bridge\Symfony\Entity\CustomCell[]
+     * @return Bridge\Symfony\Entity\Cell[]
      */
     private function getCells(EntityManager $em)
     {
         $query = $em
             ->createQueryBuilder()
             ->select('c')
-            ->where('c.column IN (:columns)')
-            ->setParameter('columns', array_keys($this->columns));
+            ->from(Cell::class, 'c');
 
         if ($this->useCustomTable) {
             $this->setCustomTableName($em);
-            $query->from(CustomCell::class, 'c');
         } else {
             $query
-                ->from(Cell::class, 'c')
-                ->andWhere('c.sheet = :sheetId')
+                ->where('c.sheet = :sheetId')
                 ->setParameter('sheetId', $this->sheetId);
         }
+
+        $query
+            ->andWhere('c.column IN (:columns)')
+            ->setParameter('columns', array_keys($this->columns));
 
         return $query->getQuery()->execute();
     }

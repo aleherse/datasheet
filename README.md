@@ -33,8 +33,6 @@ public function registerBundles()
 ```yaml
 # app/config/config.yml
 data_input_sheet:
-  config:
-    connection: "doctrine.dbal.default_connection"
   extra_column_types:
     color: AppBundle/DataInputSheet/ColumnType/Color  
   sheets:
@@ -51,8 +49,7 @@ data_input_sheet:
         "Color": color
 ```
 
-* `config` and `extra_column_types` are optional sections
-* `extra_column_types` allows to extend the library with new column types
+* `extra_column_types` is an optional section that allows to extend the library with new column types
 * Create one sheet per custom data origin
 * Create as many views as required, columns can belong to several views
 * Create all the needed columns for the sheet and set the appropriate type of each one, base types are "integer", "float", "string" and "text" 
@@ -69,7 +66,7 @@ data_input_sheet:
 ```
 
 * The tag `data_input_sheet.spine` marks the service as a data input sheet spine and the `sheet` attribute links it with the configured sheet 
-* The spine class has to extend `Arkschools\DataInputSheet\Spine` and add the logic for `getSpine` and `getHeader`
+* The spine class has to extend `Arkschools\DataInputSheet\Spine` and add the logic for `load` and `__construct`
 
 ### Update your database schema 
 
@@ -94,11 +91,19 @@ data_input_sheet:
 
 Out of the box this library allow user to store the data in a table created by the library, but this behaviour can be changed
 
+### Data not stored in the default entity manager
+
+A different Entity Manager can be set by adding a parameter to the `parameters.yml` file
+
+```yaml
+    data_input_sheet.entity_manager_name: data
+```
+
 ### Data stored in library user controlled table
 
 A custom table can be set to store the data input of an specific sheet
  
-* Create a table with the same structure as `data_input_sheet_custom_cell`
+* Create a table with the same structure as `data_input_sheet_cell`
 * Update the spine `getTableName` method to return your previously created table name
 * From now on that sheet data will be stored in the custom table
 

@@ -22,12 +22,13 @@ class Sheet
     /**
      * Sheet constructor.
      *
+     * @param string $id
      * @param string $name
      * @param View[] $views
      */
-    public function __construct($name, array $views)
+    public function __construct($id, $name, array $views)
     {
-        $this->id        = \slugifier\slugify($name);
+        $this->id        = $id;
         $this->name      = $name;
         $this->views     = $views;
     }

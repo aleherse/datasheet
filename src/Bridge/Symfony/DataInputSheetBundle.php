@@ -27,7 +27,7 @@ class DataInputSheetBundle extends Bundle
         );
 
         if (class_exists('Doctrine\Bundle\DoctrineBundle\DependencyInjection\Compiler\DoctrineOrmMappingsPass')) {
-            $container->addCompilerPass(DoctrineOrmMappingsPass::createYamlMappingDriver($mappings));
+            $container->addCompilerPass(DoctrineOrmMappingsPass::createYamlMappingDriver($mappings, ['data_input_sheet.entity_manager_name']));
         }
     }
 }

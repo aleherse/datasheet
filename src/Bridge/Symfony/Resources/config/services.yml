@@ -1,3 +1,6 @@
+parameters:
+    data_input_sheet.entity_manager_name: default
+
 services:
     arkschools.twig.data_input_sheet_cell:
         class: Arkschools\DataInputSheet\Bridge\Symfony\Twig\DataInputSheetCellExtension

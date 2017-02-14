@@ -3,9 +3,11 @@
 namespace Arkschools\DataInputSheet;
 
 use Arkschools\DataInputSheet\ColumnType\ColumnFloat;
+use Arkschools\DataInputSheet\ColumnType\ColumnGender;
 use Arkschools\DataInputSheet\ColumnType\ColumnInteger;
 use Arkschools\DataInputSheet\ColumnType\ColumnString;
 use Arkschools\DataInputSheet\ColumnType\ColumnText;
+use Arkschools\DataInputSheet\ColumnType\ColumnYesNo;
 
 class ColumnFactory
 {
@@ -13,7 +15,9 @@ class ColumnFactory
         'integer' => ColumnInteger::class,
         'float'   => ColumnFloat::class,
         'string'  => ColumnString::class,
-        'text'    => ColumnText::class
+        'text'    => ColumnText::class,
+        'gender'  => ColumnGender::class,
+        'yes/no'  => ColumnYesNo::class
     ];
 
     public function __construct(array $extraTypes = [])

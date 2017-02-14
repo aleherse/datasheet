@@ -2,6 +2,7 @@
 
 namespace Arkschools\DataInputSheet;
 
+use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\EntityManager;
 
 class DataInputSheetRepository
@@ -31,9 +32,9 @@ class DataInputSheetRepository
      */
     private $columnFactory;
 
-    public function __construct(EntityManager $em, ColumnFactory $columnFactory, $config)
+    public function __construct(ManagerRegistry $registry, ColumnFactory $columnFactory, $config, $entityManagerName = null)
     {
-        $this->em            = $em;
+        $this->em            = $registry->getManager($entityManagerName);
         $this->columnFactory = $columnFactory;
         $this->config        = $config;
     }
@@ -65,7 +66,7 @@ class DataInputSheetRepository
                 $views[$viewId]                 = $viewTitle;
             }
 
-            $this->sheets[$sheetId] = new Sheet($spine->getHeader(), $views);
+            $this->sheets[$sheetId] = new Sheet($sheetId, $spine->getHeader(), $views);
         }
     }
 
