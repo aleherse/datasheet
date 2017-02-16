@@ -2,31 +2,13 @@
 
 namespace Arkschools\DataInputSheet\ColumnType;
 
-use Arkschools\DataInputSheet\Column;
-
-class ColumnYesNo extends Column
+class ColumnYesNo extends ColumnBase
 {
-    /**
-     * @return int
-     */
-    public function getType()
+    public function __construct()
     {
-        return self::STRING;
-    }
-
-    /**
-     * @return string
-     */
-    public function getTemplate()
-    {
-        return 'DataInputSheetBundle:extension:data_input_sheet_cell_yes_no.html.twig';
-    }
-
-    /**
-     * @return int
-     */
-    public function getDBType()
-    {
-        return self::STRING;
+        parent::__construct(
+            'DataInputSheetBundle:extension:data_input_sheet_cell_yes_no.html.twig',
+            self::STRING
+        );
     }
 }

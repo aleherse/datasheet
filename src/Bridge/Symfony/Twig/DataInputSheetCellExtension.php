@@ -39,12 +39,8 @@ class DataInputSheetCellExtension extends \Twig_Extension
             return '';
         }
 
-        return $twig->render($column->getTemplate(), [
-            'columnId' => $columnId,
-            'spineId'  => $spineId,
-            'content'  => $view->getContent($spineId, $columnId),
-            'column'   => $column
-        ]);
+        return $column->render($twig, $columnId, $spineId, $view->getContent($spineId, $columnId));
+
     }
 
     /**

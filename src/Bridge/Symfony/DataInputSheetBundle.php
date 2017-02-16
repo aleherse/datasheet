@@ -2,6 +2,7 @@
 
 namespace Arkschools\DataInputSheet\Bridge\Symfony;
 
+use Arkschools\DataInputSheet\Bridge\Symfony\DependencyInjection\Compiler\ImportDataInputSheetColumnTypePass;
 use Arkschools\DataInputSheet\Bridge\Symfony\DependencyInjection\Compiler\ImportDataInputSheetSpinePass;
 use Doctrine\Bundle\DoctrineBundle\DependencyInjection\Compiler\DoctrineOrmMappingsPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -21,6 +22,7 @@ class DataInputSheetBundle extends Bundle
     public function build(ContainerBuilder $container)
     {
         $container->addCompilerPass(new ImportDataInputSheetSpinePass());
+        $container->addCompilerPass(new ImportDataInputSheetColumnTypePass());
 
         $mappings = array(
             realpath(__DIR__.'/Resources/config/doctrine-mapping') => 'Arkschools\DataInputSheet\Bridge\Symfony\Entity',

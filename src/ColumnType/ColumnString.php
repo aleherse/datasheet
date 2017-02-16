@@ -2,32 +2,13 @@
 
 namespace Arkschools\DataInputSheet\ColumnType;
 
-use Arkschools\DataInputSheet\Bridge\Symfony\Entity\Cell;
-use Arkschools\DataInputSheet\Column;
-
-class ColumnString extends Column
+class ColumnString extends ColumnBase
 {
-    /**
-     * @return int
-     */
-    public function getType()
+    public function __construct()
     {
-        return self::STRING;
-    }
-
-    /**
-     * @return int
-     */
-    public function getDBType()
-    {
-        return self::STRING;
-    }
-
-    /**
-     * @return string
-     */
-    public function getTemplate()
-    {
-        return 'DataInputSheetBundle:extension:data_input_sheet_cell_input_text.html.twig';
+        parent::__construct(
+            'DataInputSheetBundle:extension:data_input_sheet_cell_input_text.html.twig',
+            self::STRING
+        );
     }
 }

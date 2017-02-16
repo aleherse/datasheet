@@ -146,3 +146,17 @@ As explained above new column can be added through the configuration parameter `
 * Extend `Column` abstract class and implement the abstract methods
 * Extend the other methods if required for your implementation
 * Add the newly created class using the `extra_column_types` configuration
+
+### Create a custom column type as a service
+
+```yaml
+    app.data_input_sheet.grade_column:
+        class: AppBundle\DataInputSheet\ColumnGrade
+        arguments:
+          - @app.repositories.grades
+        tags:
+            - { name: data_input_sheet.column, type: grade }
+```
+
+* The tag `data_input_sheet.column` marks the service as a data input sheet extra column and the `type` attribute links it with the newly added column type 
+* The column class has to extend `Arkschools\DataInputSheet\ColumnType\ColumnBase` and add at least the logic for `__construct`
