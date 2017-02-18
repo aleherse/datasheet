@@ -66,7 +66,7 @@ class Configuration implements ConfigurationInterface
                             ->end()
                             ->children()
                                 ->scalarNode('type')->isRequired()->end()
-                                ->scalarNode('option')->defaultValue(null)->end()
+                                ->variableNode('option')->defaultValue(null)->end()
                                 ->scalarNode('field')->defaultValue(null)
                             ->end()
                         ->end()

@@ -9,7 +9,12 @@ class ObjectValueColumn extends AbstractColumn
      */
     private $methodName;
 
-    public function __construct(string $methodName)
+    /**
+     * @var array
+     */
+    private $arguments;
+
+    public function __construct(string $methodName, ?array $arguments)
     {
         parent::__construct(
             'DataInputSheetsBundle:extension:data_input_sheets_object_value_cell.html.twig',
@@ -17,6 +22,7 @@ class ObjectValueColumn extends AbstractColumn
         );
 
         $this->methodName = $methodName;
+        $this->arguments  = $arguments;
     }
 
     public function isValueColumn(): bool
@@ -26,6 +32,6 @@ class ObjectValueColumn extends AbstractColumn
 
     public function getValue($object): string
     {
-        return call_user_func([$object, $this->methodName]);
+        return strval(call_user_func_array([$object, $this->methodName], $this->arguments ?? []));
     }
 }

@@ -51,7 +51,7 @@ class ColumnFactory
         }
 
         if ('@' === substr($config['type'], 0, 1)) {
-            return new Column(new ObjectValueColumn(substr($config['type'], 1)), $title, $field, $option);
+            return new Column(new ObjectValueColumn(substr($config['type'], 1), $option), $title, $field);
         }
 
         return new Column($this->types['string'], $title, $field, $option);
