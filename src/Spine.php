@@ -17,6 +17,11 @@ class Spine
     protected $spine;
 
     /**
+     * @var object[]
+     */
+    protected $spineObjects = [];
+
+    /**
      * @var string
      */
     private $entity;
@@ -70,6 +75,7 @@ class Spine
 
     /**
      * @param string $spineId
+     *
      * @return bool
      */
     public function hasSpine($spineId)
@@ -79,6 +85,7 @@ class Spine
 
     /**
      * @param string $spineId
+     *
      * @return string
      */
     public function getSpineFromId($spineId)
@@ -88,6 +95,7 @@ class Spine
 
     /**
      * @param string $position
+     *
      * @return string |null
      */
     public function getSpineIdFromPosition($position)
@@ -140,6 +148,7 @@ class Spine
      * Extend this method if you want to filter your own entity query
      *
      * @param EntityManager $em
+     *
      * @return \Doctrine\ORM\QueryBuilder
      */
     public function getQueryBuilder(EntityManager $em)

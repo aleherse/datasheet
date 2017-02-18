@@ -249,6 +249,7 @@ class View
             $metadata = $em->getClassMetadata($this->spine->getEntity());
 
             $this->objects = [];
+
             foreach ($objects as $object) {
                 $spineId                       = $metadata->getFieldValue($object, $this->spine->getEntitySpineField());
                 $this->objects[$spineId][null] = $object;
@@ -277,13 +278,18 @@ class View
             foreach ($data as $spineId => $columnsData) {
                 $object  = $this->getObject($spineId, null, $metadata);
                 $persist = false;
+
                 $metadata->setFieldValue($object, $this->spine->getEntitySpineField(), $spineId);
+
                 foreach ($columnsData as $columnId => $content) {
                     $column = $this->getColumn($columnId);
+
                     if (null !== $column) {
                         $content = $column->castCellContent($content);
+
                         if ($this->contentChanged($spineId, $columnId, $content)) {
                             $persist = true;
+
                             $metadata->setFieldValue($object, $column->getField(), $content);
                         }
                     }
