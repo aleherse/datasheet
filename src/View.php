@@ -62,10 +62,10 @@ class View
         Spine $spine,
         array $columns
     ) {
-        $this->sheetId    = $sheetId;
-        $this->id         = \slugifier\slugify($title);
-        $this->title      = $title;
-        $this->spine      = $spine;
+        $this->sheetId = $sheetId;
+        $this->id      = \slugifier\slugify($title);
+        $this->title   = $title;
+        $this->spine   = $spine;
 
         $this->useExternalEntity = false;
         if (null !== $spine->getEntity()) {
@@ -126,6 +126,7 @@ class View
 
     /**
      * @param string $spineId
+     *
      * @return string
      */
     public function getSpineFromId($spineId)
@@ -135,6 +136,7 @@ class View
 
     /**
      * @param integer $position
+     *
      * @return null|string
      */
     public function getSpineIdFromPosition($position)
@@ -152,6 +154,7 @@ class View
 
     /**
      * @param string $columnId
+     *
      * @return Column
      */
     public function getColumn($columnId)
@@ -161,6 +164,7 @@ class View
 
     /**
      * @param string $columnId
+     *
      * @return bool
      */
     public function hasColumn($columnId)
@@ -169,9 +173,10 @@ class View
     }
 
     /**
-     * @param string $spineId
-     * @param string $columnId
+     * @param string            $spineId
+     * @param string            $columnId
      * @param ClassMetadataInfo $metadata
+     *
      * @return \StdClass
      */
     private function getObject($spineId, $columnId = null, ClassMetadataInfo $metadata = null)
@@ -190,6 +195,7 @@ class View
     /**
      * @param $spineId
      * @param $columnId
+     *
      * @return mixed
      */
     public function getContent($spineId, $columnId)
@@ -203,6 +209,7 @@ class View
 
     /**
      * @param string $spineId
+     *
      * @return bool
      */
     public function hasSpine($spineId)
@@ -222,6 +229,7 @@ class View
      * @param string $spineId
      * @param string $columnId
      * @param string $content
+     *
      * @return bool
      */
     private function contentChanged($spineId, $columnId, $content)
@@ -242,8 +250,9 @@ class View
 
             $this->objects = [];
             foreach ($objects as $object) {
-                $spineId = $metadata->getFieldValue($object, $this->spine->getEntitySpineField());
+                $spineId                       = $metadata->getFieldValue($object, $this->spine->getEntitySpineField());
                 $this->objects[$spineId][null] = $object;
+
                 foreach ($this->columns as $column) {
                     $this->contents[$spineId][$column->getId()] = $metadata->getFieldValue($object, $column->getField());
                 }
@@ -253,7 +262,7 @@ class View
 
             $this->objects = [];
             foreach ($cells as $cell) {
-                $this->objects[$cell->getSpine()][$cell->getColumn()] = $cell;
+                $this->objects[$cell->getSpine()][$cell->getColumn()]  = $cell;
                 $this->contents[$cell->getSpine()][$cell->getColumn()] = $cell->getContent();
             }
         }
@@ -318,6 +327,7 @@ class View
 
     /**
      * @param EntityManager $em
+     *
      * @return Bridge\Symfony\Entity\Cell[]
      */
     private function getCells(EntityManager $em)
