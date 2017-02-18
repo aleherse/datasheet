@@ -23,7 +23,7 @@
             <tbody>
             {% for spineId, spineRow in view.spine %}
                 <tr>
-                    <td><a href="{{ path('data_input_sheet_edit', {'sheetId': view.sheetId, 'viewId': view.id, 'position': loop.index0}) }}">{{ spineRow }}</a></td>
+                    <td><a href="{{ path('data_input_sheets_edit', {'sheetId': view.sheetId, 'viewId': view.id, 'position': loop.index0}) }}">{{ spineRow }}</a></td>
                     <td>{{ spineRow }}</td>
                     {% for column in view.columns %}
                         <td class="center">

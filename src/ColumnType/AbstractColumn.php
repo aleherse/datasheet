@@ -1,8 +1,8 @@
 <?php
 
-namespace Arkschools\DataInputSheet\ColumnType;
+namespace Arkschools\DataInputSheets\ColumnType;
 
-abstract class ColumnBase
+abstract class AbstractColumn
 {
     const INTEGER = 0;
     const FLOAT = 1;

@@ -1,8 +1,8 @@
 <?php
 
-namespace spec\Arkschools\DataInputSheet;
+namespace spec\Arkschools\DataInputSheets;
 
-use Arkschools\DataInputSheet\Column;
+use Arkschools\DataInputSheets\Column;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 

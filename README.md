@@ -1,4 +1,4 @@
-# Data Input Sheet
+# Data Input Sheets
 
 Library that abstracts a custom data origin as the spine of a table,
 and builds a data sheet using columns defined through a yml configuration file. The library
@@ -9,7 +9,7 @@ handle the logic of displaying the table and storing the user input values.
 ### Download using composer
 
 ```bash
-composer require arkschools/data-input-sheet
+composer require arkschools/data-input-sheets
 ```
 
 ### Enable the bundle in the kernel
@@ -22,7 +22,7 @@ public function registerBundles()
 {
     $bundles = array(
         // ...
-        new Arkschools\DataInputSheet\Bridge\Symfony\DataInputSheetBundle(),
+        new Arkschools\DataInputSheets\Bridge\Symfony\DataInputSheetsBundle(),
         // ...
     );
 }
@@ -32,9 +32,9 @@ public function registerBundles()
 
 ```yaml
 # app/config/config.yml
-data_input_sheet:
+data_input_sheets:
   extra_column_types:
-    color: AppBundle/DataInputSheet/ColumnType/Color  
+    color: AppBundle/DataInputSheets/ColumnType/Color  
   sheets:
     cars:
       views:
@@ -57,16 +57,16 @@ data_input_sheet:
 ### Create the spine service
 
 ```yaml
-    app.data_input_sheet.cars_spine:
-        class: AppBundle\DataInputSheet\CarsSpine
+    app.data_input_sheets.cars_spine:
+        class: AppBundle\DataInputSheets\CarsSpine
         arguments:
           - @app.repositories.car
         tags:
-            - { name: data_input_sheet.spine, sheet: cars }
+            - { name: data_input_sheets.spine, sheet: cars }
 ```
 
-* The tag `data_input_sheet.spine` marks the service as a data input sheet spine and the `sheet` attribute links it with the configured sheet 
-* The spine class has to extend `Arkschools\DataInputSheet\Spine` and add the logic for `load` and `__construct`
+* The tag `data_input_sheets.spine` marks the service as a data input sheet spine and the `sheet` attribute links it with the configured sheet 
+* The spine class has to extend `Arkschools\DataInputSheets\Spine` and add the logic for `load` and `__construct`
 
 ### Update your database schema 
 
@@ -82,8 +82,8 @@ If you want to use the default one just add the following route configuration
 
 ```yaml
 # app/config/routing.yml
-data_input_sheet:
-    resource: "@DataInputSheetBundle/Controller/DataInputSheetController"
+data_input_sheets:
+    resource: "@DataInputSheetsBundle/Controller/DataInputSheetsController"
     type:     annotation
 ```
 
@@ -96,14 +96,14 @@ Out of the box this library allow user to store the data in a table created by t
 A different Entity Manager can be set by adding a parameter to the `parameters.yml` file
 
 ```yaml
-    data_input_sheet.entity_manager_name: data
+    data_input_sheets.entity_manager_name: data
 ```
 
 ### Data stored in library user controlled table
 
 A custom table can be set to store the data input of an specific sheet
  
-* Create a table with the same structure as `data_input_sheet_cell`
+* Create a table with the same structure as `data_input_sheets_cell`
 * Update the spine `getTableName` method to return your previously created table name
 * From now on that sheet data will be stored in the custom table
 
@@ -120,7 +120,7 @@ Given the configuration:
 
 ```yaml
 # app/config/config.yml
-data_input_sheet:
+data_input_sheets:
   sheets:
     cars:
       views:
@@ -150,13 +150,13 @@ As explained above new column can be added through the configuration parameter `
 ### Create a custom column type as a service
 
 ```yaml
-    app.data_input_sheet.grade_column:
-        class: AppBundle\DataInputSheet\ColumnGrade
+    app.data_input_sheets.grade_column:
+        class: AppBundle\DataInputSheets\ColumnGrade
         arguments:
           - @app.repositories.grades
         tags:
-            - { name: data_input_sheet.column, type: grade }
+            - { name: data_input_sheets.column, type: grade }
 ```
 
-* The tag `data_input_sheet.column` marks the service as a data input sheet extra column and the `type` attribute links it with the newly added column type 
-* The column class has to extend `Arkschools\DataInputSheet\ColumnType\ColumnBase` and add at least the logic for `__construct`
+* The tag `data_input_sheets.column` marks the service as a data input sheet extra column and the `type` attribute links it with the newly added column type 
+* The column class has to extend `Arkschools\DataInputSheets\ColumnType\AbstractColumn` and add at least the logic for `__construct`

@@ -1,9 +1,9 @@
 <?php
 
-namespace Arkschools\DataInputSheet\Bridge\Symfony\DependencyInjection;
+namespace Arkschools\DataInputSheets\Bridge\Symfony\DependencyInjection;
 
-use Arkschools\DataInputSheet\ColumnFactory;
-use Arkschools\DataInputSheet\DataInputSheetRepository;
+use Arkschools\DataInputSheets\ColumnFactory;
+use Arkschools\DataInputSheets\DataInputSheetsRepository;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -13,7 +13,7 @@ use Symfony\Component\DependencyInjection\Parameter;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
-class DataInputSheetExtension extends Extension
+class DataInputSheetsExtension extends Extension
 {
     /**
      * {@inheritdoc}
@@ -25,20 +25,20 @@ class DataInputSheetExtension extends Extension
         $config        = $processor->processConfiguration($configuration, $configs);
 
         $container->addDefinitions([
-            'arkschools.factory.data_input_sheet_column' => new Definition(
+            'arkschools.factory.data_input_sheets_column' => new Definition(
                 ColumnFactory::class,
                 [$config['extra_column_types']]
             )
         ]);
 
         $container->addDefinitions([
-            'arkschools.repository.data_input_sheet' => new Definition(
-                DataInputSheetRepository::class,
+            'arkschools.repository.data_input_sheets' => new Definition(
+                DataInputSheetsRepository::class,
                 [
                     new Reference('doctrine'),
-                    new Reference('arkschools.factory.data_input_sheet_column'),
+                    new Reference('arkschools.factory.data_input_sheets_column'),
                     $config['sheets'],
-                    new Parameter('data_input_sheet.entity_manager_name')
+                    new Parameter('data_input_sheets.entity_manager_name')
                 ]
             )
         ]);

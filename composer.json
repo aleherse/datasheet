@@ -1,5 +1,5 @@
 {
-    "name": "arkschools/data-input-sheet",
+    "name": "arkschools/data-input-sheets",
     "description": "Library that builds a data sheet from a spine class and a yml configuration file",
     "license": "MIT",
     "type": "package",
@@ -20,7 +20,7 @@
         "twig/twig": "~1.0"
     },
     "autoload": {
-        "psr-4": { "Arkschools\\DataInputSheet\\": "src/" }
+        "psr-4": { "Arkschools\\DataInputSheets\\": "src/" }
     },
     "config": {
         "bin-dir": "bin"

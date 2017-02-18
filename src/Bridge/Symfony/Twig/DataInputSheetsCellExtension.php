@@ -1,11 +1,10 @@
 <?php
 
-namespace Arkschools\DataInputSheet\Bridge\Symfony\Twig;
+namespace Arkschools\DataInputSheets\Bridge\Symfony\Twig;
 
-use Arkschools\DataInputSheet\Column;
-use Arkschools\DataInputSheet\View;
+use Arkschools\DataInputSheets\View;
 
-class DataInputSheetCellExtension extends \Twig_Extension
+class DataInputSheetsCellExtension extends \Twig_Extension
 {
     /**
      * @return \Twig_SimpleFunction[]

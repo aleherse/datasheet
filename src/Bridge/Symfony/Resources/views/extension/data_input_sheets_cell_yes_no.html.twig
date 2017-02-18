@@ -1,5 +1,5 @@
 {% spaceless %}
-    <select class="data-input-sheet-input" name="{{ constant('Arkschools\\DataInputSheet\\View::FORM_NAME') }}[{{ spineId }}][{{ columnId }}]">
+    <select class="data-input-sheet-input" name="{{ constant('Arkschools\\DataInputSheets\\View::FORM_NAME') }}[{{ spineId }}][{{ columnId }}]">
         {% for option in ['', 'Y', 'N'] %}
             <option value="{{ option }}" {% if content == option %}selected{% endif %}>{{ option }}</option>
         {% endfor %}

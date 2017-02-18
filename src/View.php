@@ -1,8 +1,8 @@
 <?php
 
-namespace Arkschools\DataInputSheet;
+namespace Arkschools\DataInputSheets;
 
-use Arkschools\DataInputSheet\Bridge\Symfony\Entity\Cell;
+use Arkschools\DataInputSheets\Bridge\Symfony\Entity\Cell;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Symfony\Component\HttpFoundation\Request;

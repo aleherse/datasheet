@@ -1,4 +1,4 @@
 suites:
     domain:
-        namespace: Arkschools\DataInputSheet
-        psr4_prefix: Arkschools\DataInputSheet
+        namespace: Arkschools\DataInputSheets
+        psr4_prefix: Arkschools\DataInputSheets

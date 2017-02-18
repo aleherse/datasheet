@@ -1,9 +1,9 @@
 <?php
 
-namespace spec\Arkschools\DataInputSheet;
+namespace spec\Arkschools\DataInputSheets;
 
-use Arkschools\DataInputSheet\Spine;
-use Arkschools\DataInputSheet\View;
+use Arkschools\DataInputSheets\Spine;
+use Arkschools\DataInputSheets\View;
 use PhpSpec\ObjectBehavior;
 
 class SheetSpec extends ObjectBehavior

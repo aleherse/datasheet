@@ -1,6 +1,6 @@
 <?php
 
-namespace Arkschools\DataInputSheet\Bridge\Symfony\DependencyInjection;
+namespace Arkschools\DataInputSheets\Bridge\Symfony\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
@@ -19,18 +19,18 @@ class Configuration implements ConfigurationInterface
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('data_input_sheet');
+        $rootNode = $treeBuilder->root('data_input_sheets');
 
         /**
          *  Example:
          *
-         *  data_input_sheet:
+         *  data_input_sheets:
          *      extra_column_types:
-         *          color: AppBundle/DataInputSheet/ColumnType/Color
+         *          color: AppBundle/DataInputSheets/ColumnType/Color
          *      sheets:
          *          cars:
          *              config:
-         *                  table: data_input_sheet_cars
+         *                  table: data_input_sheets_cars
          *              views:
          *                  "Brand and model": ["Brand name", "Model name", "Description"]
          *                  "Performance": ["Brand name", "Top speed", "Acceleration"]

@@ -1,14 +1,14 @@
 <?php
 
-namespace Arkschools\DataInputSheet;
+namespace Arkschools\DataInputSheets;
 
-use Arkschools\DataInputSheet\ColumnType\ColumnBase;
-use Arkschools\DataInputSheet\ColumnType\ColumnFloat;
-use Arkschools\DataInputSheet\ColumnType\ColumnGender;
-use Arkschools\DataInputSheet\ColumnType\ColumnInteger;
-use Arkschools\DataInputSheet\ColumnType\ColumnString;
-use Arkschools\DataInputSheet\ColumnType\ColumnText;
-use Arkschools\DataInputSheet\ColumnType\ColumnYesNo;
+use Arkschools\DataInputSheets\ColumnType\AbstractColumn;
+use Arkschools\DataInputSheets\ColumnType\FloatColumn;
+use Arkschools\DataInputSheets\ColumnType\GenderColumn;
+use Arkschools\DataInputSheets\ColumnType\IntegerColumn;
+use Arkschools\DataInputSheets\ColumnType\StringColumn;
+use Arkschools\DataInputSheets\ColumnType\TextColumn;
+use Arkschools\DataInputSheets\ColumnType\YesNoColumn;
 
 class ColumnFactory
 {
@@ -17,12 +17,12 @@ class ColumnFactory
     public function __construct(array $extraTypes = [])
     {
         $this->types = [
-            'integer' => new ColumnInteger(),
-            'float'   => new ColumnFloat(),
-            'string'  => new ColumnString(),
-            'text'    => new ColumnText(),
-            'gender'  => new ColumnGender(),
-            'yes/no'  => new ColumnYesNo()
+            'integer' => new IntegerColumn(),
+            'float'   => new FloatColumn(),
+            'string'  => new StringColumn(),
+            'text'    => new TextColumn(),
+            'gender'  => new GenderColumn(),
+            'yes/no'  => new YesNoColumn()
         ];
 
         foreach ($extraTypes as $type => $class) {
@@ -32,7 +32,7 @@ class ColumnFactory
         }
     }
 
-    public function addColumnType(ColumnBase $columnType, $type)
+    public function addColumnType(AbstractColumn $columnType, $type)
     {
         $this->types[$type] = $columnType;
     }

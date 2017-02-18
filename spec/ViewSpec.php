@@ -1,10 +1,10 @@
 <?php
 
-namespace spec\Arkschools\DataInputSheet;
+namespace spec\Arkschools\DataInputSheets;
 
-use Arkschools\DataInputSheet\Bridge\Symfony\Entity\Cell;
-use Arkschools\DataInputSheet\Column;
-use Arkschools\DataInputSheet\Spine;
+use Arkschools\DataInputSheets\Bridge\Symfony\Entity\Cell;
+use Arkschools\DataInputSheets\Column;
+use Arkschools\DataInputSheets\Spine;
 use PhpSpec\ObjectBehavior;
 
 class ViewSpec extends ObjectBehavior

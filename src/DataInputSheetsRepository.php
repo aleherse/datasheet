@@ -1,11 +1,11 @@
 <?php
 
-namespace Arkschools\DataInputSheet;
+namespace Arkschools\DataInputSheets;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\EntityManager;
 
-class DataInputSheetRepository
+class DataInputSheetsRepository
 {
     /**
      * @var Sheet[]

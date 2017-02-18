@@ -29,7 +29,7 @@
         </table>
         <br/>
         {%  if position > 0 %}<div><button type="submit" class="btn btn-success" name="submit" value="Previous">Save & Previous</button></div>{% endif %}
-        <div><a class="btn btn-success" href="{{ path('data_input_sheet_view', {'sheetId': view.sheetId, 'viewId': view.id}) }}">Cancel & Back</a></div>
+        <div><a class="btn btn-success" href="{{ path('data_input_sheets_view', {'sheetId': view.sheetId, 'viewId': view.id}) }}">Cancel & Back</a></div>
         {%  if position < view.count - 1 %}<div><button type="submit" class="btn btn-success" name="submit" value="Next">Save & Next</button></div>{% endif %}
     </form>
 </div>

@@ -1,8 +1,8 @@
 <?php
 
-namespace Arkschools\DataInputSheet\Bridge\Symfony\Entity;
+namespace Arkschools\DataInputSheets\Bridge\Symfony\Entity;
 
-use Arkschools\DataInputSheet\Column;
+use Arkschools\DataInputSheets\Column;
 
 class Cell
 {

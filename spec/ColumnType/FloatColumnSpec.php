@@ -1,13 +1,13 @@
 <?php
 
-namespace spec\Arkschools\DataInputSheet\ColumnType;
+namespace spec\Arkschools\DataInputSheets\ColumnType;
 
-use Arkschools\DataInputSheet\Bridge\Symfony\Entity\Cell;
-use Arkschools\DataInputSheet\Bridge\Symfony\Entity\CustomCell;
-use Arkschools\DataInputSheet\Column;
+use Arkschools\DataInputSheets\Bridge\Symfony\Entity\Cell;
+use Arkschools\DataInputSheets\Bridge\Symfony\Entity\CustomCell;
+use Arkschools\DataInputSheets\Column;
 use PhpSpec\ObjectBehavior;
 
-class ColumnFloatSpec extends ObjectBehavior
+class FloatColumnSpec extends ObjectBehavior
 {
     function let()
     {

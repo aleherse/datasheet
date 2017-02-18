@@ -1,9 +1,9 @@
 <?php
 
-namespace Arkschools\DataInputSheet;
+namespace Arkschools\DataInputSheets;
 
-use Arkschools\DataInputSheet\Bridge\Symfony\Entity\Cell;
-use Arkschools\DataInputSheet\ColumnType\ColumnBase;
+use Arkschools\DataInputSheets\Bridge\Symfony\Entity\Cell;
+use Arkschools\DataInputSheets\ColumnType\AbstractColumn;
 
 class Column
 {
@@ -23,7 +23,7 @@ class Column
     protected $id;
 
     /**
-     * @var ColumnBase
+     * @var AbstractColumn
      */
     protected $columnType;
 
@@ -37,7 +37,7 @@ class Column
      */
     private $option;
 
-    public function __construct(ColumnBase $columnType, $title, $field = null, $option = null)
+    public function __construct(AbstractColumn $columnType, $title, $field = null, $option = null)
     {
         $this->id         = \slugifier\slugify($title);
         $this->columnType = $columnType;
@@ -71,7 +71,7 @@ class Column
     }
 
     /**
-     * @return ColumnBase
+     * @return AbstractColumn
      */
     public function getColumnType()
     {

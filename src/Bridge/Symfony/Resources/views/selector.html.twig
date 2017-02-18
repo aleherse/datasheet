@@ -31,7 +31,7 @@
                             </div>
                             <ul>
                                 {% for viewId, viewTitle in sheet.views %}
-                                    <li>{{ viewTitle }} <a href="{{ path('data_input_sheet_view', { 'sheetId': sheet.id, 'viewId': viewId }) }}" class="view-marksheet">View</a></li>
+                                    <li>{{ viewTitle }} <a href="{{ path('data_input_sheets_view', { 'sheetId': sheet.id, 'viewId': viewId }) }}" class="view-marksheet">View</a></li>
                                 {% endfor %}
                             </ul>
                         </div>

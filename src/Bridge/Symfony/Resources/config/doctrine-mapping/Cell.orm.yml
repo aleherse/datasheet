@@ -1,6 +1,6 @@
-Arkschools\DataInputSheet\Bridge\Symfony\Entity\Cell:
+Arkschools\DataInputSheets\Bridge\Symfony\Entity\Cell:
   type: entity
-  table: data_input_sheet_cell
+  table: data_input_sheets_cell
   id:
     sheet:
       type: string

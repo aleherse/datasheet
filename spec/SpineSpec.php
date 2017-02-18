@@ -1,6 +1,6 @@
 <?php
 
-namespace spec\Arkschools\DataInputSheet;
+namespace spec\Arkschools\DataInputSheets;
 
 use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\ORM\EntityManager;

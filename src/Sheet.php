@@ -1,6 +1,6 @@
 <?php
 
-namespace Arkschools\DataInputSheet;
+namespace Arkschools\DataInputSheets;
 
 class Sheet
 {

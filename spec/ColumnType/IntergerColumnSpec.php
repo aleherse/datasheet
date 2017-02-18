@@ -1,12 +1,12 @@
 <?php
 
-namespace spec\Arkschools\DataInputSheet\ColumnType;
+namespace spec\Arkschools\DataInputSheets\ColumnType;
 
-use Arkschools\DataInputSheet\Column;
+use Arkschools\DataInputSheets\Column;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
-class ColumnStringSpec extends ObjectBehavior
+class IntergerColumnSpec extends ObjectBehavior
 {
     function let()
     {
@@ -20,11 +20,11 @@ class ColumnStringSpec extends ObjectBehavior
 
     function it_has_a_type()
     {
-        $this->getType()->shouldReturn(Column::STRING);
+        $this->getType()->shouldReturn(Column::INTEGER);
     }
 
     function it_has_a_DB_type()
     {
-        $this->getDBType()->shouldReturn(Column::STRING);
+        $this->getDBType()->shouldReturn(Column::INTEGER);
     }
 }
