@@ -24,24 +24,28 @@ class DataInputSheetsExtension extends Extension
         $configuration = new Configuration();
         $config        = $processor->processConfiguration($configuration, $configs);
 
-        $container->addDefinitions([
-            'arkschools.factory.data_input_sheets_column' => new Definition(
-                ColumnFactory::class,
-                [$config['extra_column_types']]
-            )
-        ]);
+        $container->addDefinitions(
+            [
+                'arkschools.factory.data_input_sheets_column' => new Definition(
+                    ColumnFactory::class,
+                    [$config['extra_column_types']]
+                ),
+            ]
+        );
 
-        $container->addDefinitions([
-            'arkschools.repository.data_input_sheets' => new Definition(
-                DataInputSheetsRepository::class,
-                [
-                    new Reference('doctrine'),
-                    new Reference('arkschools.factory.data_input_sheets_column'),
-                    $config['sheets'],
-                    new Parameter('data_input_sheets.entity_manager_name')
-                ]
-            )
-        ]);
+        $container->addDefinitions(
+            [
+                'arkschools.repository.data_input_sheets' => new Definition(
+                    DataInputSheetsRepository::class,
+                    [
+                        new Reference('doctrine'),
+                        new Reference('arkschools.factory.data_input_sheets_column'),
+                        $config['sheets'],
+                        new Parameter('data_input_sheets.entity_manager_name'),
+                    ]
+                ),
+            ]
+        );
 
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.yml');
