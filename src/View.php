@@ -56,9 +56,15 @@ class View
      */
     private $useCustomTable = false;
 
+    /**
+     * @param string   $sheetId
+     * @param string   $title
+     * @param Spine    $spine
+     * @param Column[] $columns
+     */
     public function __construct(
-        $sheetId,
-        $title,
+        string $sheetId,
+        string $title,
         Spine $spine,
         array $columns
     ) {
@@ -68,78 +74,65 @@ class View
         $this->spine   = $spine;
 
         $this->useExternalEntity = false;
+
         if (null !== $spine->getEntity()) {
             $this->useExternalEntity = true;
         }
 
         $this->useCustomTable = false;
+
         if (null !== $spine->getTableName()) {
             $this->useCustomTable = true;
         }
 
-        /** @var Column $column */
         $this->columns = [];
+
         foreach ($columns as $column) {
-            $this->columns[$column->getId()] = $column;
+            $columnId                 = $column->getId();
+            $this->columns[$columnId] = $column;
+
+            if ($column->isValueColumn()) {
+                foreach (array_keys($spine->getSpine()) as $spineId) {
+                    $this->contents[$spineId][$columnId] = $column->getValue($spine->getSpineObject($spineId));
+                }
+            }
         }
     }
 
-    /**
-     * @return string
-     */
-    public function getId()
+    public function getId(): string
     {
         return $this->id;
     }
 
-    /**
-     * @return string
-     */
-    public function getSheetId()
+    public function getSheetId(): string
     {
         return $this->sheetId;
     }
 
-    /**
-     * @return string
-     */
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->title;
     }
 
-    /**
-     * @return string
-     */
-    public function getSpineHeader()
+    public function getSpineHeader(): string
     {
         return $this->spine->getHeader();
     }
 
     /**
-     * @return \string[]
+     * @return string[]
      */
-    public function getSpine()
+    public function getSpine(): array
     {
         return $this->spine->getSpine();
     }
 
-    /**
-     * @param string $spineId
-     *
-     * @return string
-     */
-    public function getSpineFromId($spineId)
+    public function getSpineFromId(string $spineId): string
     {
         return $this->spine->getSpineFromId($spineId);
     }
 
-    /**
-     * @param integer $position
-     *
-     * @return null|string
-     */
-    public function getSpineIdFromPosition($position)
+    public function getSpineIdFromPosition(int $position): ?string
     {
         return $this->spine->getSpineIdFromPosition($position);
     }
@@ -147,39 +140,22 @@ class View
     /**
      * @return Column[]
      */
-    public function getColumns()
+    public function getColumns(): array
     {
         return $this->columns;
     }
 
-    /**
-     * @param string $columnId
-     *
-     * @return Column
-     */
-    public function getColumn($columnId)
+    public function getColumn(string $columnId): Column
     {
         return (isset($this->columns[$columnId])) ? $this->columns[$columnId] : null;
     }
 
-    /**
-     * @param string $columnId
-     *
-     * @return bool
-     */
-    public function hasColumn($columnId)
+    public function hasColumn(string $columnId): bool
     {
         return isset($this->columns[$columnId]);
     }
 
-    /**
-     * @param string            $spineId
-     * @param string            $columnId
-     * @param ClassMetadataInfo $metadata
-     *
-     * @return \StdClass
-     */
-    private function getObject($spineId, $columnId = null, ClassMetadataInfo $metadata = null)
+    private function getObject(string $spineId, ?string $columnId = null, ClassMetadataInfo $metadata = null): \StdClass
     {
         if (!isset($this->objects[$spineId][$columnId])) {
             if ($this->useExternalEntity) {
@@ -192,13 +168,7 @@ class View
         return $this->objects[$spineId][$columnId];
     }
 
-    /**
-     * @param $spineId
-     * @param $columnId
-     *
-     * @return mixed
-     */
-    public function getContent($spineId, $columnId)
+    public function getContent(string $spineId, string $columnId)
     {
         if (isset($this->contents[$spineId][$columnId])) {
             return $this->contents[$spineId][$columnId];
@@ -207,32 +177,17 @@ class View
         return null;
     }
 
-    /**
-     * @param string $spineId
-     *
-     * @return bool
-     */
-    public function hasSpine($spineId)
+    public function hasSpine(string $spineId): bool
     {
         return $this->spine->hasSpine($spineId);
     }
 
-    /**
-     * @return int
-     */
-    public function count()
+    public function count(): int
     {
         return $this->spine->count();
     }
 
-    /**
-     * @param string $spineId
-     * @param string $columnId
-     * @param string $content
-     *
-     * @return bool
-     */
-    private function contentChanged($spineId, $columnId, $content)
+    private function contentChanged(string $spineId, string $columnId, string $content): bool
     {
         return $this->getContent($spineId, $columnId) !== $content;
     }
@@ -242,12 +197,11 @@ class View
         return $request->request->get(self::FORM_NAME, []);
     }
 
-    public function loadContent(EntityManager $em)
+    public function loadContent(EntityManager $em): View
     {
         if ($this->useExternalEntity) {
-            $objects  = $this->spine->getQueryBuilder($em)->getQuery()->execute();
-            $metadata = $em->getClassMetadata($this->spine->getEntity());
-
+            $objects       = $this->spine->getQueryBuilder($em)->getQuery()->execute();
+            $metadata      = $em->getClassMetadata($this->spine->getEntity());
             $this->objects = [];
 
             foreach ($objects as $object) {
@@ -255,26 +209,32 @@ class View
                 $this->objects[$spineId][null] = $object;
 
                 foreach ($this->columns as $column) {
-                    $this->contents[$spineId][$column->getId()] = $metadata->getFieldValue($object, $column->getField());
+                    if (!$column->isValueColumn()) {
+                        $this->contents[$spineId][$column->getId()] = $metadata->getFieldValue($object, $column->getField());
+                    }
                 }
             }
         } else {
-            $cells = $this->getCells($em);
-
+            $cells         = $this->getCells($em);
             $this->objects = [];
+
             foreach ($cells as $cell) {
-                $this->objects[$cell->getSpine()][$cell->getColumn()]  = $cell;
-                $this->contents[$cell->getSpine()][$cell->getColumn()] = $cell->getContent();
+                $spine  = $cell->getSpine();
+                $column = $cell->getColumn();
+
+                $this->objects[$spine][$column]  = $cell;
+                $this->contents[$spine][$column] = $cell->getContent();
             }
         }
 
         return $this;
     }
 
-    public function persist(EntityManager $em, $data)
+    public function persist(EntityManager $em, array $data): void
     {
         if ($this->useExternalEntity) {
             $metadata = $em->getClassMetadata($this->spine->getEntity());
+
             foreach ($data as $spineId => $columnsData) {
                 $object  = $this->getObject($spineId, null, $metadata);
                 $persist = false;
@@ -284,14 +244,16 @@ class View
                 foreach ($columnsData as $columnId => $content) {
                     $column = $this->getColumn($columnId);
 
-                    if (null !== $column) {
-                        $content = $column->castCellContent($content);
+                    if (null === $column) {
+                        continue;
+                    }
 
-                        if ($this->contentChanged($spineId, $columnId, $content)) {
-                            $persist = true;
+                    $content = $column->castCellContent($content);
 
-                            $metadata->setFieldValue($object, $column->getField(), $content);
-                        }
+                    if ($this->contentChanged($spineId, $columnId, $content)) {
+                        $persist = true;
+
+                        $metadata->setFieldValue($object, $column->getField(), $content);
                     }
                 }
 
@@ -306,25 +268,26 @@ class View
 
             foreach ($data as $spineId => $columnsData) {
                 foreach ($columnsData as $columnId => $content) {
-                    if (isset($this->columns[$columnId])) {
-                        $content = $this->columns[$columnId]->castCellContent($content);
+                    if (!isset($this->columns[$columnId])) {
+                        continue;
+                    }
 
-                        if ($this->contentChanged($spineId, $columnId, $content)) {
-                            /** @var Cell $cell */
-                            $cell = $this->getObject($spineId, $columnId);
-                            if (null !== $content) {
-                                $em->persist($cell->setContent($content));
-                            } else {
-                                $em->remove($cell);
-                            }
-                        }
+                    $content = $this->columns[$columnId]->castCellContent($content);
+
+                    if ($this->contentChanged($spineId, $columnId, $content)) {
+                        /** @var Cell $cell */
+                        $cell = $this->getObject($spineId, $columnId);
+
+                        null !== $content
+                            ? $em->persist($cell->setContent($content))
+                            : $em->remove($cell);
                     }
                 }
             }
         }
     }
 
-    private function setCustomTableName(EntityManager $em)
+    private function setCustomTableName(EntityManager $em): void
     {
         $em
             ->getClassMetadata(Cell::class)
@@ -336,7 +299,7 @@ class View
      *
      * @return Bridge\Symfony\Entity\Cell[]
      */
-    private function getCells(EntityManager $em)
+    private function getCells(EntityManager $em): array
     {
         $query = $em
             ->createQueryBuilder()

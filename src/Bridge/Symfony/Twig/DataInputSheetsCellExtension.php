@@ -11,41 +11,30 @@ class DataInputSheetsCellExtension extends \Twig_Extension
      */
     public function getFunctions()
     {
-        return array(
+        return [
             new \Twig_SimpleFunction(
                 'dataInputSheetCell',
                 [$this, 'dataInputSheetCell'],
                 [
-                    'is_safe'           => array('html'),
+                    'is_safe'           => ['html'],
                     'needs_environment' => true,
                 ]
             ),
-        );
+        ];
     }
 
-    /**
-     * @param \Twig_Environment $twig
-     * @param View $view
-     * @param string $spineId
-     * @param string $columnId
-     *
-     * @return string
-     */
-    public function dataInputSheetCell(\Twig_Environment $twig, View $view, $columnId, $spineId)
+    public function dataInputSheetCell(\Twig_Environment $twig, View $view, string $columnId, string $spineId): string
     {
         $column = $view->getColumn($columnId);
+
         if (null === $column) {
             return '';
         }
 
         return $column->render($twig, $columnId, $spineId, $view->getContent($spineId, $columnId));
-
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): string
     {
         return 'dataInputSheetCell';
     }

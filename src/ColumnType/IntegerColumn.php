@@ -12,15 +12,10 @@ class IntegerColumn extends AbstractColumn
         );
     }
 
-    /**
-     * @param string $content
-     * @param string $option
-     * @return int
-     */
-    public function castCellContent($content, $option = null)
+    public function castCellContent(string $content, ?string $option = null)
     {
         $content = parent::castCellContent($content, $option);
 
-        return (null !== $content) ? intval($content) : null;
+        return null !== $content ? intval($content) : null;
     }
 }

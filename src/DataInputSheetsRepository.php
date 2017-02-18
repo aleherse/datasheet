@@ -32,67 +32,59 @@ class DataInputSheetsRepository
      */
     private $columnFactory;
 
-    public function __construct(ManagerRegistry $registry, ColumnFactory $columnFactory, $config, $entityManagerName = null)
+    public function __construct(ManagerRegistry $registry, ColumnFactory $columnFactory, array $config, ?string $entityManagerName = null)
     {
         $this->em            = $registry->getManager($entityManagerName);
         $this->columnFactory = $columnFactory;
         $this->config        = $config;
     }
 
-    /**
-     * @param Spine $spine
-     * @param string $sheetId
-     */
-    public function addSpine(Spine $spine, $sheetId)
+    public function addSpine(Spine $spine, string $sheetId): void
     {
-        if (isset($this->config[$sheetId])) {
-            $columns = [];
-            foreach ($this->config[$sheetId]['columns'] as $columnTitle => $columnConfig) {
-                $columns[$columnTitle] = $this->columnFactory->create($columnConfig, $columnTitle);
-            }
-
-            $views = [];
-            foreach ($this->config[$sheetId]['views'] as $viewTitle => $columnNames) {
-                $viewColumns = [];
-                foreach ($columnNames as $title) {
-                    if (isset($columns[$title])) {
-                        $viewColumns[] = $columns[$title];
-                    }
-                }
-                $view   = new View($sheetId, $viewTitle, $spine, $viewColumns);
-                $viewId = $view->getId();
-
-                $this->views[$sheetId][$viewId] = $view;
-                $views[$viewId]                 = $viewTitle;
-            }
-
-            $this->sheets[$sheetId] = new Sheet($sheetId, $spine->getHeader(), $views);
+        if (!isset($this->config[$sheetId])) {
+            return;
         }
+
+        $columns = [];
+
+        foreach ($this->config[$sheetId]['columns'] as $columnTitle => $columnConfig) {
+            $columns[$columnTitle] = $this->columnFactory->create($columnConfig, $columnTitle);
+        }
+
+        $views = [];
+
+        foreach ($this->config[$sheetId]['views'] as $viewTitle => $columnNames) {
+            $viewColumns = [];
+
+            foreach ($columnNames as $title) {
+                if (isset($columns[$title])) {
+                    $viewColumns[] = $columns[$title];
+                }
+            }
+
+            $view                           = new View($sheetId, $viewTitle, $spine, $viewColumns);
+            $viewId                         = $view->getId();
+            $this->views[$sheetId][$viewId] = $view;
+            $views[$viewId]                 = $viewTitle;
+        }
+
+        $this->sheets[$sheetId] = new Sheet($sheetId, $spine->getHeader(), $views);
     }
 
     /**
      * @return Sheet[]
      */
-    public function findAll()
+    public function findAll(): array
     {
         return $this->sheets;
     }
 
-    /**
-     * @param string $id
-     * @return Sheet|null
-     */
-    public function findById($id)
+    public function findById(string $id): ?Sheet
     {
         return (isset($this->sheets[$id])) ? $this->sheets[$id] : null;
     }
 
-    /**
-     * @param string $sheetId
-     * @param string $viewId
-     * @return View|null
-     */
-    public function findViewBy($sheetId, $viewId)
+    public function findViewBy(string $sheetId, string $viewId): ?View
     {
         if (!isset($this->views[$sheetId][$viewId])) {
             return null;
@@ -103,7 +95,7 @@ class DataInputSheetsRepository
         return $view->loadContent($this->em);
     }
 
-    public function save(View $view, $data)
+    public function save(View $view, array $data): void
     {
         $view->persist($this->em, $data);
 

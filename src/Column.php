@@ -37,7 +37,7 @@ class Column
      */
     private $option;
 
-    public function __construct(AbstractColumn $columnType, $title, $field = null, $option = null)
+    public function __construct(AbstractColumn $columnType, string $title, ?string $field = null, ?string $option = null)
     {
         $this->id         = \slugifier\slugify($title);
         $this->columnType = $columnType;
@@ -46,60 +46,49 @@ class Column
         $this->option     = $option;
     }
 
-    /**
-     * @return string
-     */
-    public function getId()
+    public function getId(): string
     {
         return $this->id;
     }
 
-    /**
-     * @return string
-     */
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->title;
     }
 
-    /**
-     * @return string
-     */
-    public function getField()
+    public function getField(): string
     {
         return $this->field;
     }
 
-    /**
-     * @return AbstractColumn
-     */
-    public function getColumnType()
+    public function getColumnType(): AbstractColumn
     {
         return $this->columnType;
     }
 
-    /**
-     * @param string $content
-     * @return string|null
-     */
-    public function castCellContent($content)
+    public function castCellContent($content): ?string
     {
         return $this->columnType->castCellContent($content, $this->option);
     }
 
-    /**
-     * @param string $sheetId
-     * @param string $spineId
-     * @param mixed $content
-     * @return Cell
-     */
-    public function createCell($sheetId, $spineId, $content = null)
+    public function createCell(string $sheetId, string $spineId, $content = null): Cell
     {
         return new Cell($sheetId, $this->id, $spineId, $this->columnType->getDbType(), $this->castCellContent($content));
     }
 
-    public function render(\Twig_Environment $twig, $columnId, $spineId, $content)
+    public function render(\Twig_Environment $twig, $columnId, $spineId, $content): string
     {
         return $this->columnType->render($twig, $columnId, $spineId, $content, $this->option);
+    }
+
+    public function isValueColumn(): bool
+    {
+        return $this->columnType->isValueColumn();
+    }
+
+
+    public function getValue($object): string
+    {
+        return $this->columnType->getValue($object);
     }
 }

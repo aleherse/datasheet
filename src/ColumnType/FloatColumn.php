@@ -12,15 +12,10 @@ class FloatColumn extends AbstractColumn
         );
     }
 
-    /**
-     * @param string $content
-     * @param string $option
-     * @return float
-     */
-    public function castCellContent($content, $option = null)
+    public function castCellContent(string $content, ?string $option = null)
     {
         $content = parent::castCellContent($content, $option);
 
-        return (null !== $content) ? floatval($content) : null;
+        return null !== $content ? floatval($content) : null;
     }
 }

@@ -158,4 +158,9 @@ class Spine
             ->select('o')
             ->from($this->getEntity(), 'o');
     }
+
+    public function getSpineObject(string $spineId)
+    {
+        return $this->spineObjects[$spineId];
+    }
 }
