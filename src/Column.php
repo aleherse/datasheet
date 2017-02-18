@@ -3,8 +3,9 @@
 namespace Arkschools\DataInputSheet;
 
 use Arkschools\DataInputSheet\Bridge\Symfony\Entity\Cell;
+use Arkschools\DataInputSheet\ColumnType\ColumnBase;
 
-abstract class Column
+class Column
 {
     const INTEGER = 0;
     const FLOAT = 1;
@@ -22,20 +23,27 @@ abstract class Column
     protected $id;
 
     /**
-     * @var int
+     * @var ColumnBase
      */
-    protected $type;
+    protected $columnType;
 
     /**
      * @var string
      */
     private $field;
 
-    public function __construct($title, $field = null)
+    /**
+     * @var string
+     */
+    private $option;
+
+    public function __construct(ColumnBase $columnType, $title, $field = null, $option = null)
     {
-        $this->id    = \slugifier\slugify($title);
-        $this->title = $title;
-        $this->field = $field;
+        $this->id         = \slugifier\slugify($title);
+        $this->columnType = $columnType;
+        $this->title      = $title;
+        $this->field      = $field;
+        $this->option     = $option;
     }
 
     /**
@@ -63,19 +71,12 @@ abstract class Column
     }
 
     /**
-     * @return int
+     * @return ColumnBase
      */
-    public abstract function getType();
-
-    /**
-     * @return string
-     */
-    public abstract function getTemplate();
-
-    /**
-     * @return int
-     */
-    public abstract function getDBType();
+    public function getColumnType()
+    {
+        return $this->columnType;
+    }
 
     /**
      * @param string $content
@@ -83,12 +84,7 @@ abstract class Column
      */
     public function castCellContent($content)
     {
-        $content = trim($content);
-        if (empty($content) && !is_numeric($content)) {
-            return null;
-        }
-
-        return $content;
+        return $this->columnType->castCellContent($content, $this->option);
     }
 
     /**
@@ -99,6 +95,11 @@ abstract class Column
      */
     public function createCell($sheetId, $spineId, $content = null)
     {
-        return new Cell($sheetId, $this->id, $spineId, $this->getDBType(), $this->castCellContent($content));
+        return new Cell($sheetId, $this->id, $spineId, $this->columnType->getDbType(), $this->castCellContent($content));
+    }
+
+    public function render(\Twig_Environment $twig, $columnId, $spineId, $content)
+    {
+        return $this->columnType->render($twig, $columnId, $spineId, $content, $this->option);
     }
 }

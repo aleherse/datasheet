@@ -2,43 +2,25 @@
 
 namespace Arkschools\DataInputSheet\ColumnType;
 
-use Arkschools\DataInputSheet\Bridge\Symfony\Entity\Cell;
-use Arkschools\DataInputSheet\Column;
-
-class ColumnFloat extends Column
+class ColumnFloat extends ColumnBase
 {
-    /**
-     * @return int
-     */
-    public function getType()
+    public function __construct()
     {
-        return self::FLOAT;
-    }
-
-    /**
-     * @return int
-     */
-    public function getDBType()
-    {
-        return self::FLOAT;
+        parent::__construct(
+            'DataInputSheetBundle:extension:data_input_sheet_cell_input_text.html.twig',
+            self::FLOAT
+        );
     }
 
     /**
      * @param string $content
+     * @param string $option
      * @return float
      */
-    public function castCellContent($content)
+    public function castCellContent($content, $option = null)
     {
-        $content = parent::castCellContent($content);
+        $content = parent::castCellContent($content, $option);
 
         return (null !== $content) ? floatval($content) : null;
-    }
-
-    /**
-     * @return string
-     */
-    public function getTemplate()
-    {
-        return 'DataInputSheetBundle:extension:data_input_sheet_cell_input_text.html.twig';
     }
 }

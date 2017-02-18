@@ -2,6 +2,7 @@
 
 namespace Arkschools\DataInputSheet;
 
+use Arkschools\DataInputSheet\ColumnType\ColumnBase;
 use Arkschools\DataInputSheet\ColumnType\ColumnFloat;
 use Arkschools\DataInputSheet\ColumnType\ColumnGender;
 use Arkschools\DataInputSheet\ColumnType\ColumnInteger;
@@ -11,32 +12,40 @@ use Arkschools\DataInputSheet\ColumnType\ColumnYesNo;
 
 class ColumnFactory
 {
-    private static $types = [
-        'integer' => ColumnInteger::class,
-        'float'   => ColumnFloat::class,
-        'string'  => ColumnString::class,
-        'text'    => ColumnText::class,
-        'gender'  => ColumnGender::class,
-        'yes/no'  => ColumnYesNo::class
-    ];
+    private $types;
 
     public function __construct(array $extraTypes = [])
     {
+        $this->types = [
+            'integer' => new ColumnInteger(),
+            'float'   => new ColumnFloat(),
+            'string'  => new ColumnString(),
+            'text'    => new ColumnText(),
+            'gender'  => new ColumnGender(),
+            'yes/no'  => new ColumnYesNo()
+        ];
+
         foreach ($extraTypes as $type => $class) {
             if (class_exists($class)) {
-                self::$types[$type] = $class;
+                $this->types[$type] = new $class;
             }
         }
     }
 
+    public function addColumnType(ColumnBase $columnType, $type)
+    {
+        $this->types[$type] = $columnType;
+    }
+
     public function create(array $config, $title)
     {
-        $field = (isset($config['field'])) ? $config['field'] : null;
+        $field  = (isset($config['field'])) ? $config['field'] : null;
+        $option = (isset($config['option'])) ? $config['option'] : null;
 
-        if (isset(self::$types[$config['type']])) {
-            return new self::$types[$config['type']]($title, $field);
+        if (isset($this->types[$config['type']])) {
+            return new Column($this->types[$config['type']], $title, $field, $option);
         }
 
-        return new self::$types['string']($title, $field);
+        return new Column($this->types['string'], $title, $field, $option);
     }
 }

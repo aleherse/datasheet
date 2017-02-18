@@ -2,43 +2,25 @@
 
 namespace Arkschools\DataInputSheet\ColumnType;
 
-use Arkschools\DataInputSheet\Bridge\Symfony\Entity\Cell;
-use Arkschools\DataInputSheet\Column;
-
-class ColumnInteger extends Column
+class ColumnInteger extends ColumnBase
 {
-    /**
-     * @return int
-     */
-    public function getType()
+    public function __construct()
     {
-        return self::INTEGER;
-    }
-
-    /**
-     * @return int
-     */
-    public function getDBType()
-    {
-        return self::INTEGER;
+        parent::__construct(
+            'DataInputSheetBundle:extension:data_input_sheet_cell_input_text.html.twig',
+            self::INTEGER
+        );
     }
 
     /**
      * @param string $content
-     * @return integer
+     * @param string $option
+     * @return int
      */
-    public function castCellContent($content)
+    public function castCellContent($content, $option = null)
     {
-        $content = parent::castCellContent($content);
+        $content = parent::castCellContent($content, $option);
 
         return (null !== $content) ? intval($content) : null;
-    }
-
-    /**
-     * @return string
-     */
-    public function getTemplate()
-    {
-        return 'DataInputSheetBundle:extension:data_input_sheet_cell_input_text.html.twig';
     }
 }
