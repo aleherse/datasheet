@@ -7,10 +7,11 @@ use Arkschools\DataInputSheets\Column;
 class Cell
 {
     protected static $types = [
+        Column::BOOL    => 'contentBoolean',
         Column::INTEGER => 'contentInteger',
         Column::FLOAT   => 'contentFloat',
         Column::STRING  => 'contentString',
-        Column::TEXT    => 'contentText'
+        Column::TEXT    => 'contentText',
     ];
 
     /**
@@ -32,6 +33,11 @@ class Cell
      * @var string
      */
     protected $type;
+
+    /**
+     * @var integer
+     */
+    protected $contentBoolean;
 
     /**
      * @var integer
@@ -78,6 +84,7 @@ class Cell
 
     /**
      * @param string $sheet
+     *
      * @return Cell
      */
     public function setSheet($sheet)
@@ -97,6 +104,7 @@ class Cell
 
     /**
      * @param string $spine
+     *
      * @return Cell
      */
     public function setSpine($spine)
@@ -116,6 +124,7 @@ class Cell
 
     /**
      * @param string $column
+     *
      * @return Cell
      */
     public function setColumn($column)
@@ -137,6 +146,7 @@ class Cell
 
     /**
      * @param string $content
+     *
      * @return Cell
      */
     public function setContent($content)

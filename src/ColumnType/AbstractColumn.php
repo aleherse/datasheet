@@ -5,10 +5,11 @@ namespace Arkschools\DataInputSheets\ColumnType;
 abstract class AbstractColumn
 {
     const NONE = -1;
-    const INTEGER = 0;
-    const FLOAT = 1;
-    const STRING = 2;
-    const TEXT = 3;
+    const BOOL = 0;
+    const INTEGER = 1;
+    const FLOAT = 2;
+    const STRING = 3;
+    const TEXT = 4;
 
     /**
      * @var string
@@ -43,7 +44,7 @@ abstract class AbstractColumn
         return $this->dbType;
     }
 
-    public function castCellContent(string $content, ?string $option = null)
+    public function castCellContent(?string $content, $option = null)
     {
         $content = trim($content);
 

@@ -57,9 +57,18 @@ class DataInputSheetsRepository
             $viewColumns = [];
 
             foreach ($columnNames as $title) {
-                if (isset($columns[$title])) {
-                    $viewColumns[] = $columns[$title];
+                if (!isset($columns[$title])) {
+                    throw new \LogicException(
+                        sprintf(
+                            'The view \'%s\' is not properly configured. It contains the column \'%s\' that is not defined on the sheet \'%s\'',
+                            $viewTitle,
+                            $title,
+                            $sheetId
+                        )
+                    );
                 }
+
+                $viewColumns[] = $columns[$title];
             }
 
             $view                           = new View($sheetId, $viewTitle, $spine, $viewColumns);

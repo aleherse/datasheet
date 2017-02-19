@@ -7,9 +7,11 @@ use Arkschools\DataInputSheets\ColumnType\FloatColumn;
 use Arkschools\DataInputSheets\ColumnType\GenderColumn;
 use Arkschools\DataInputSheets\ColumnType\IntegerColumn;
 use Arkschools\DataInputSheets\ColumnType\ObjectValueColumn;
+use Arkschools\DataInputSheets\ColumnType\ServiceListColumn;
 use Arkschools\DataInputSheets\ColumnType\StringColumn;
 use Arkschools\DataInputSheets\ColumnType\TextColumn;
 use Arkschools\DataInputSheets\ColumnType\YesNoColumn;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class ColumnFactory
 {
@@ -18,15 +20,16 @@ class ColumnFactory
      */
     private $types;
 
-    public function __construct(array $extraTypes = [])
+    public function __construct(array $extraTypes = [], ContainerInterface $container)
     {
         $this->types = [
-            'integer' => new IntegerColumn(),
-            'float'   => new FloatColumn(),
-            'string'  => new StringColumn(),
-            'text'    => new TextColumn(),
-            'gender'  => new GenderColumn(),
-            'yes/no'  => new YesNoColumn(),
+            'integer'     => new IntegerColumn(),
+            'float'       => new FloatColumn(),
+            'string'      => new StringColumn(),
+            'text'        => new TextColumn(),
+            'gender'      => new GenderColumn(),
+            'yes/no'      => new YesNoColumn(),
+            'serviceList' => new ServiceListColumn($container),
         ];
 
         foreach ($extraTypes as $type => $class) {
@@ -50,8 +53,8 @@ class ColumnFactory
             return new Column($this->types[$config['type']], $title, $field, $option);
         }
 
-        if ('@' === substr($config['type'], 0, 1)) {
-            return new Column(new ObjectValueColumn(substr($config['type'], 1), $option), $title, $field);
+        if ('->' === substr($config['type'], 0, 2)) {
+            return new Column(new ObjectValueColumn(substr($config['type'], 2), $option), $title, $field);
         }
 
         return new Column($this->types['string'], $title, $field, $option);

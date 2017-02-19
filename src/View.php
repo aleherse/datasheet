@@ -155,14 +155,12 @@ class View
         return isset($this->columns[$columnId]);
     }
 
-    private function getObject(string $spineId, ?string $columnId = null, ClassMetadataInfo $metadata = null): \StdClass
+    private function getObject(string $spineId, ?string $columnId = null, ClassMetadataInfo $metadata = null)
     {
         if (!isset($this->objects[$spineId][$columnId])) {
-            if ($this->useExternalEntity) {
-                $this->objects[$spineId][$columnId] = $metadata->newInstance();
-            } else {
-                $this->objects[$spineId][$columnId] = $this->getColumn($columnId)->createCell($this->sheetId, $spineId, null);
-            }
+            $this->objects[$spineId][$columnId] = $this->useExternalEntity
+                ? $metadata->newInstance()
+                : $this->getColumn($columnId)->createCell($this->sheetId, $spineId, null);
         }
 
         return $this->objects[$spineId][$columnId];
@@ -187,7 +185,7 @@ class View
         return $this->spine->count();
     }
 
-    private function contentChanged(string $spineId, string $columnId, string $content): bool
+    private function contentChanged(string $spineId, string $columnId, $content): bool
     {
         return $this->getContent($spineId, $columnId) !== $content;
     }
@@ -314,9 +312,17 @@ class View
                 ->setParameter('sheetId', $this->sheetId);
         }
 
+        $columns = [];
+
+        foreach ($this->columns as $columnName => $column) {
+            if (!$column->isValueColumn()) {
+                $columns[] = $columnName;
+            }
+        }
+
         $query
             ->andWhere('c.column IN (:columns)')
-            ->setParameter('columns', array_keys($this->columns));
+            ->setParameter('columns', $columns);
 
         return $query->getQuery()->execute();
     }

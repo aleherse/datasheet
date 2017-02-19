@@ -28,7 +28,10 @@ class DataInputSheetsExtension extends Extension
             [
                 'arkschools.factory.data_input_sheets_column' => new Definition(
                     ColumnFactory::class,
-                    [$config['extra_column_types']]
+                    [
+                        $config['extra_column_types'],
+                        new Reference('service_container'),
+                    ]
                 ),
             ]
         );

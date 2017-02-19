@@ -15,6 +15,10 @@ Arkschools\DataInputSheets\Bridge\Symfony\Entity\Cell:
     type:
       type: smallint
       column: value_type
+    contentBoolean:
+      type: boolean
+      column: value_bool
+      nullable: true
     contentInteger:
       type: integer
       column: value_int

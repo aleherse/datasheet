@@ -1,7 +1,7 @@
 {% spaceless %}
     <select class="data-input-sheet-input" name="{{ constant('Arkschools\\DataInputSheets\\View::FORM_NAME') }}[{{ spineId }}][{{ columnId }}]">
-        {% for option in ['', 'Y', 'N'] %}
-            <option value="{{ option }}" {% if content == option %}selected{% endif %}>{{ option }}</option>
-        {% endfor %}
+        <option value="" {% if content is not same as(true) and content is not same as(false) %}selected{% endif %}></option>
+        <option value="Y" {% if content is same as(true) %}selected{% endif %}>Yes</option>
+        <option value="N" {% if content is same as(false) %}selected{% endif %}>No</option>
     </select>
 {% endspaceless %}
