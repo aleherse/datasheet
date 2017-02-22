@@ -37,6 +37,11 @@ class View
     private $columns;
 
     /**
+     * @var Column[]
+     */
+    private $visibleColumns;
+
+    /**
      * @var array
      */
     private $objects;
@@ -61,12 +66,14 @@ class View
      * @param string   $title
      * @param Spine    $spine
      * @param Column[] $columns
+     * @param string[] $hiddenColumns
      */
     public function __construct(
         string $sheetId,
         string $title,
         Spine $spine,
-        array $columns
+        array $columns,
+        array $hiddenColumns = []
     ) {
         $this->sheetId = $sheetId;
         $this->id      = \slugifier\slugify($title);
@@ -90,6 +97,10 @@ class View
         foreach ($columns as $column) {
             $columnId                 = $column->getId();
             $this->columns[$columnId] = $column;
+
+            if (!isset($hiddenColumns[$columnId])) {
+                $this->visibleColumns[$columnId] = $column;
+            }
 
             if ($column->isValueColumn()) {
                 foreach (array_keys($spine->getSpine()) as $spineId) {
@@ -143,6 +154,22 @@ class View
     public function getColumns(): array
     {
         return $this->columns;
+    }
+
+    /**
+     * @return Column[]
+     */
+    public function getVisibleColumns(): array
+    {
+        return $this->visibleColumns;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasHiddenColumns(): bool
+    {
+        return count($this->columns) === count($this->visibleColumns);
     }
 
     public function getColumn(string $columnId): Column

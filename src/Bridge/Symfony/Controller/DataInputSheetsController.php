@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Response;
 class DataInputSheetsController extends Controller
 {
     /**
-     * @Route("/data-input-sheet/selector", name="data_input_sheets_selector")
+     * @Route("/data-input-sheets/selector", name="data_input_sheets_selector")
      *
      * @return Response
      */
@@ -24,7 +24,7 @@ class DataInputSheetsController extends Controller
     }
 
     /**
-     * @Route("/data-input-sheet/show/{sheetId}/{viewId}", name="data_input_sheets_view")
+     * @Route("/data-input-sheets/show/{sheetId}/{viewId}", name="data_input_sheets_view")
      *
      * @param Request $request
      * @param string $sheetId
@@ -42,12 +42,45 @@ class DataInputSheetsController extends Controller
         }
 
         if ($request->isMethod('post')) {
-            $repository->save($view, $request->request->all());
+            $repository->save($view, $view->extractDataFromRequest($request));
             $this->addFlash('success', 'Data successfully saved');
 
             return $this->redirectToRoute('data_input_sheets_view', ['sheetId' => $sheetId, 'viewId' => $viewId]);
         }
 
         return $this->render('DataInputSheetsBundle::view.html.twig', ['view' => $view]);
+    }
+
+    /**
+     * @Route("/data-input-sheets/show/{sheetId}/{viewId}/edit/{position}", name="data_input_sheets_edit")
+     *
+     * @param Request $request
+     * @param string  $sheetId
+     * @param string  $viewId
+     * @param int     $position
+     *
+     * @return Response
+     */
+    public function editDataInputSheetsAction(Request $request, $sheetId, $viewId, $position)
+    {
+        $repository = $this->get('arkschools.repository.data_input_sheets');
+        $view       = $repository->findViewBy($sheetId, $viewId);
+
+        if (null === $view) {
+            return $this->redirectToRoute('data_input_sheets_selector');
+        }
+
+        if (0 > $position || $view->count() <= $position) {
+            return $this->redirectToRoute('data_input_sheets_view', ['sheetId' => $sheetId, 'viewId' => $viewId]);
+        }
+
+        if ($request->isMethod('post')) {
+            $repository->save($view, $view->extractDataFromRequest($request));
+            $this->addFlash('success', 'Data successfully saved');
+
+            return $this->redirectToRoute('data_input_sheets_edit', ['sheetId' => $sheetId, 'viewId' => $viewId, 'position' => $position]);
+        }
+
+        return $this->render('DataInputSheetsBundle::view.html.twig', ['view' => $view, 'position' => $position]);
     }
 }
