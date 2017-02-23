@@ -15,7 +15,7 @@
             <thead>
             <tr>
                 <th>{{ view.spineHeader }}</th>
-                {% for column in view.columns %}
+                {% for column in view.visibleColumns %}
                     <th>{{ column.title }}</th>
                 {% endfor %}
             </tr>
@@ -25,7 +25,7 @@
                 <tr>
                     <td><a href="{{ path('data_input_sheets_edit', {'sheetId': view.sheetId, 'viewId': view.id, 'position': loop.index0}) }}">{{ spineRow }}</a></td>
                     <td>{{ spineRow }}</td>
-                    {% for column in view.columns %}
+                    {% for column in view.visibleColumns %}
                         <td class="center">
                             {{ dataInputSheetCell(view, column.id, spineId) }}
                         </td>

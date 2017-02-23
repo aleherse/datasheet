@@ -53,25 +53,30 @@ class DataInputSheetsRepository
 
         $views = [];
 
-        foreach ($this->config[$sheetId]['views'] as $viewTitle => $columnNames) {
+        foreach ($this->config[$sheetId]['views'] as $viewTitle => $viewColumn) {
             $viewColumns = [];
+            $hiddenColumnIds = [];
 
-            foreach ($columnNames as $title) {
-                if (!isset($columns[$title])) {
+            foreach ($viewColumn as $viewColumnData) {
+                if (!isset($columns[$viewColumnData['column']])) {
                     throw new \LogicException(
                         sprintf(
                             'The view \'%s\' is not properly configured. It contains the column \'%s\' that is not defined on the sheet \'%s\'',
                             $viewTitle,
-                            $title,
+                            $viewColumnData['column'],
                             $sheetId
                         )
                     );
                 }
 
-                $viewColumns[] = $columns[$title];
+                $column = $columns[$viewColumnData['column']];
+                $viewColumns[] = $column;
+                if ($viewColumnData['hide']) {
+                    $hiddenColumnIds[$column->getId()] = true;
+                }
             }
 
-            $view                           = new View($sheetId, $viewTitle, $spine, $viewColumns);
+            $view                           = new View($sheetId, $viewTitle, $spine, $viewColumns, $hiddenColumnIds);
             $viewId                         = $view->getId();
             $this->views[$sheetId][$viewId] = $view;
             $views[$viewId]                 = $viewTitle;
