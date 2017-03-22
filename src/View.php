@@ -225,8 +225,13 @@ class View
     public function loadContent(EntityManager $em): View
     {
         if ($this->useExternalEntity) {
+            $entity = $this->spine->getEntity();
+            if ($this->useCustomTable) {
+                $this->setCustomTableName($em, $entity);
+            }
+
             $objects       = $this->spine->getQueryBuilder($em)->getQuery()->execute();
-            $metadata      = $em->getClassMetadata($this->spine->getEntity());
+            $metadata      = $em->getClassMetadata($entity);
             $this->objects = [];
 
             foreach ($objects as $object) {
@@ -258,7 +263,12 @@ class View
     public function persist(EntityManager $em, array $data): void
     {
         if ($this->useExternalEntity) {
-            $metadata = $em->getClassMetadata($this->spine->getEntity());
+            $entity = $this->spine->getEntity();
+            if ($this->useCustomTable) {
+                $this->setCustomTableName($em, $entity);
+            }
+
+            $metadata = $em->getClassMetadata($entity);
 
             foreach ($data as $spineId => $columnsData) {
                 $object  = $this->getObject($spineId, null, $metadata);
@@ -312,10 +322,10 @@ class View
         }
     }
 
-    private function setCustomTableName(EntityManager $em): void
+    private function setCustomTableName(EntityManager $em, string $class = null): void
     {
         $em
-            ->getClassMetadata(Cell::class)
+            ->getClassMetadata($class ?? Cell::class)
             ->setPrimaryTable(['name' => $this->spine->getTableName()]);
     }
 
