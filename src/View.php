@@ -283,6 +283,10 @@ class View
                         continue;
                     }
 
+                    if (!$column->isStored()) {
+                        continue;
+                    }
+
                     $content = $column->castCellContent($content);
 
                     if ($this->contentChanged($spineId, $columnId, $content)) {
@@ -304,6 +308,10 @@ class View
             foreach ($data as $spineId => $columnsData) {
                 foreach ($columnsData as $columnId => $content) {
                     if (!isset($this->columns[$columnId])) {
+                        continue;
+                    }
+
+                    if (!$this->columns[$columnId]->isStored()) {
                         continue;
                     }
 

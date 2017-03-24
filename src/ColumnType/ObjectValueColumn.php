@@ -30,6 +30,11 @@ class ObjectValueColumn extends AbstractColumn
         return true;
     }
 
+    public function isStored(): bool
+    {
+        return false;
+    }
+
     public function getValue($object): string
     {
         return strval(call_user_func_array([$object, $this->methodName], $this->arguments ?? []));

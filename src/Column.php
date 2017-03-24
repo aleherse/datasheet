@@ -87,6 +87,10 @@ class Column
         return $this->columnType->isValueColumn();
     }
 
+    public function isStored(): bool
+    {
+        return $this->columnType->isStored();
+    }
 
     public function getValue($object): string
     {
