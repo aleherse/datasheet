@@ -60,6 +60,11 @@ abstract class AbstractColumn
         return false;
     }
 
+    public function isStored(): bool
+    {
+        return true;
+    }
+
     public function getValue($object): string
     {
         return '';
