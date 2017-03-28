@@ -39,8 +39,12 @@ data_input_sheets:
   sheets:
     cars:
       views:
-        "Brand and model": ["Brand name", "Model name", "Description", "Color"]
-        "Performance": ["Brand name", "Top speed", "Acceleration"]
+        "Brand and model":
+          filters:
+          columns: ["Brand name", "Model name", "Description", "Color"]
+        "Performance":
+          filters:
+          columns: ["Brand name", "Top speed", "Acceleration"]
       columns:
         "Brand name": string
         "Model name": string
@@ -59,15 +63,17 @@ data_input_sheets:
 
 Sometimes a view has too many columns to be displayed as a table for each spine value, in that case the view can be declared like this
 
-```
+```yaml
   sheets:
     cars:
       views:
-        "Brand and model": 
-            - "Brand name"
-            - "Model name"
-            - { column: "Description", hide: true }
-            - "Color"
+        "Brand and model":
+            filters:
+            columns:
+                - "Brand name"
+                - "Model name"
+                - { column: "Description", hide: true }
+                - "Color"
 ```
 
 All the columns will be displayed when accessed an individual spine element
@@ -85,6 +91,21 @@ All the columns will be displayed when accessed an individual spine element
 
 * The tag `data_input_sheets.spine` marks the service as a data input sheet spine and the `sheet` attribute links it with the configured sheet 
 * The spine class has to extend `Arkschools\DataInputSheets\Spine` and add the logic for `load` and `__construct`
+
+A filter can be added on each view to limit the spine elements shown in there
+                             
+```yaml
+  sheets:
+    cars:
+      views:
+        "Classics":
+          filters: {age: '>25'}
+          columns: ["Brand name", "Model name", "Description", "Color"]
+```
+
+In the previous example "Classics" will show just cars older than 25 years, 
+to make this possible `defaultFilter` should be extended to have the default filter
+and `load` should make use of the filters attribute to query the spine objects 
 
 ### Update your database schema 
 
@@ -142,7 +163,7 @@ data_input_sheets:
 
 * Requires the usage of the attribute option that contains an array with as first element a service name and as a second element a method name from that service 
 
-```
+```yaml
     - column: 'Car Design'
       type:   'serviceList'
       option: ['app.data_input_sheets.car_lists', 'getCarDesigns']
@@ -150,7 +171,7 @@ data_input_sheets:
 
 * A service with the name `app.data_input_sheets.car_lists` should exists with a method named `getCarDesigns` that will return and array with the list of allowed values 
 
-```
+```php
 class CarLists
 {
     public function getCarDesigns()
@@ -168,7 +189,7 @@ class CarLists
 * `methodName` can be any string that can be used as a PHP object method name
 * Requires that the Spine in the `load` method stores in the `spineObjects` property and array of spine objects indexed by the spineId
 
-```
+```php
     protected function load()
     {
         if (null === $this->spine) {
@@ -189,7 +210,7 @@ class CarLists
 
 * Spine objects should have a method named `methodName` and arguments can be optionally passed to that method through the `option` attribute 
 
-```
+```yaml
     - column: 'Car length'
       type:   '->getLength'
       option: ['meters']

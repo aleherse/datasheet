@@ -3,6 +3,7 @@
 namespace Arkschools\DataInputSheets;
 
 use Doctrine\ORM\EntityManager;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class Spine
 {
@@ -22,6 +23,16 @@ class Spine
     protected $spineObjects = [];
 
     /**
+     * @var array
+     */
+    protected $filters = [];
+
+    /**
+     * @var bool
+     */
+    protected $filtersChanged = false;
+
+    /**
      * @var string
      */
     private $entity;
@@ -36,6 +47,11 @@ class Spine
      */
     private $entitySpineField;
 
+    /**
+     * @var OptionsResolver
+     */
+    private $resolver;
+
     public function __construct($header, array $spine, $tableName = null, $entity = null, $entitySpineField = 'id')
     {
         $this->header           = $header;
@@ -43,6 +59,15 @@ class Spine
         $this->entity           = $entity;
         $this->tableName        = $tableName;
         $this->entitySpineField = $entitySpineField;
+        $this->resolver         = new OptionsResolver();
+        $this->filters          = $this->defaultFilter();
+
+        $this->resolver->setDefaults($this->defaultFilter());
+    }
+
+    protected function defaultFilter()
+    {
+        return [];
     }
 
     /**
@@ -60,7 +85,35 @@ class Spine
      */
     protected function load()
     {
+        if (empty($this->spine) || $this->filtersChanged) {
+            $this->spine        = [];
+            $this->spineObjects = [];
+
+            // Query spine objects using $this->filters
+
+            asort($this->spine);
+        }
+
         return $this;
+    }
+
+    /**
+     * @param array $filters
+     */
+    public function setFilters(array $filters)
+    {
+        $filters = $this->resolver->resolve($filters);
+
+        $this->filtersChanged = false;
+
+        foreach ($filters as $name => $value) {
+            if ($this->filters[$name] !== $value) {
+                $this->filtersChanged = true;
+                break;
+            }
+        }
+
+        $this->filters = $filters;
     }
 
     /**

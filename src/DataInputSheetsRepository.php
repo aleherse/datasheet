@@ -57,7 +57,7 @@ class DataInputSheetsRepository
             $viewColumns = [];
             $hiddenColumnIds = [];
 
-            foreach ($viewColumn as $viewColumnData) {
+            foreach ($viewColumn['columns'] as $viewColumnData) {
                 if (!isset($columns[$viewColumnData['column']])) {
                     throw new \LogicException(
                         sprintf(
@@ -76,7 +76,7 @@ class DataInputSheetsRepository
                 }
             }
 
-            $view                           = new View($sheetId, $viewTitle, $spine, $viewColumns, $hiddenColumnIds);
+            $view                           = new View($sheetId, $viewTitle, $spine, $viewColumn['filters'], $viewColumns, $hiddenColumnIds);
             $viewId                         = $view->getId();
             $this->views[$sheetId][$viewId] = $view;
             $views[$viewId]                 = $viewTitle;
