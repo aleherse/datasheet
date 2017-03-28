@@ -32,6 +32,16 @@ class View
     private $spine;
 
     /**
+     * @var array
+     */
+    private $filters;
+
+    /**
+     * @var bool
+     */
+    private $filtersApplied;
+
+    /**
      * @var Column[]
      */
     private $columns;
@@ -65,6 +75,7 @@ class View
      * @param string   $sheetId
      * @param string   $title
      * @param Spine    $spine
+     * @param array    $spineFilter
      * @param Column[] $columns
      * @param string[] $hiddenColumns
      */
@@ -72,6 +83,7 @@ class View
         string $sheetId,
         string $title,
         Spine $spine,
+        array $spineFilter,
         array $columns,
         array $hiddenColumns = []
     ) {
@@ -79,6 +91,7 @@ class View
         $this->id      = \slugifier\slugify($title);
         $this->title   = $title;
         $this->spine   = $spine;
+        $this->filters = $spineFilter;
 
         $this->useExternalEntity = false;
 
@@ -135,17 +148,27 @@ class View
      */
     public function getSpine(): array
     {
-        return $this->spine->getSpine();
+        return $this->filteredSpine()->getSpine();
     }
 
     public function getSpineFromId(string $spineId): string
     {
-        return $this->spine->getSpineFromId($spineId);
+        return $this->filteredSpine()->getSpineFromId($spineId);
     }
 
     public function getSpineIdFromPosition(int $position): ?string
     {
-        return $this->spine->getSpineIdFromPosition($position);
+        return $this->filteredSpine()->getSpineIdFromPosition($position);
+    }
+
+    private function filteredSpine(): Spine
+    {
+        if (!$this->filtersApplied) {
+            $this->spine->setFilters($this->filters);
+            $this->filtersApplied = true;
+        }
+
+        return $this->spine;
     }
 
     /**
