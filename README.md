@@ -40,10 +40,8 @@ data_input_sheets:
     cars:
       views:
         "Brand and model":
-          filters:
           columns: ["Brand name", "Model name", "Description", "Color"]
         "Performance":
-          filters:
           columns: ["Brand name", "Top speed", "Acceleration"]
       columns:
         "Brand name": string
@@ -68,7 +66,6 @@ Sometimes a view has too many columns to be displayed as a table for each spine 
     cars:
       views:
         "Brand and model":
-            filters:
             columns:
                 - "Brand name"
                 - "Model name"
@@ -104,8 +101,8 @@ A filter can be added on each view to limit the spine elements shown in there
 ```
 
 In the previous example "Classics" will show just cars older than 25 years, 
-to make this possible `defaultFilter` should be extended to have the default filter
-and `load` should make use of the filters attribute to query the spine objects 
+to make this possible `defaultFilter` should be extended to have the default filter values
+and `load` should make use of the values of the filters attribute to query the spine objects 
 
 ### Update your database schema 
 
