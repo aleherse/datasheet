@@ -114,12 +114,6 @@ class View
             if (!isset($hiddenColumns[$columnId])) {
                 $this->visibleColumns[$columnId] = $column;
             }
-
-            if ($column->isValueColumn()) {
-                foreach (array_keys($spine->getSpine()) as $spineId) {
-                    $this->contents[$spineId][$columnId] = $column->getValue($spine->getSpineObject($spineId));
-                }
-            }
         }
     }
 
