@@ -150,6 +150,11 @@ class View
         return $this->filteredSpine()->getSpineFromId($spineId);
     }
 
+    public function getSpineObjectFromId(string $spineId)
+    {
+        return $this->filteredSpine()->getSpineObject($spineId);
+    }
+
     public function getSpineIdFromPosition(int $position): ?string
     {
         return $this->filteredSpine()->getSpineIdFromPosition($position);
@@ -271,6 +276,23 @@ class View
 
                 $this->objects[$spine][$column]  = $cell;
                 $this->contents[$spine][$column] = $cell->getContent();
+            }
+        }
+
+        /** @var Column[] $valueColumns */
+        $valueColumns = [];
+        foreach ($this->columns as $column) {
+            if ($column->isValueColumn()) {
+                $valueColumns[] = $column;
+            }
+        }
+
+        if (!empty($valueColumns)) {
+            foreach ($this->getSpine() as $spineId => $spine) {
+                $object = $this->getSpineObjectFromId($spineId);
+                foreach ($valueColumns as $column) {
+                    $this->contents[$spineId][$column->getId()] = $column->getValue($object);
+                }
             }
         }
 
