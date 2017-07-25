@@ -75,6 +75,24 @@ Sometimes a view has too many columns to be displayed as a table for each spine 
 
 All the columns will be displayed when accessed an individual spine element
 
+It is possible to lock down a column to prevent modifications via configuration, this is useful if there are periods of time when you don't want users to modify some of the columns 
+
+```yaml
+# app/config/config.yml
+data_input_sheets:
+  sheets:
+    cars:
+      views:
+        "Brand and model":
+          columns: ["Brand name", "Model name", "Description"]
+      columns:
+        "Brand name":
+            type: string
+            read_only: true
+        "Model name": string
+        "Description": text
+```
+
 ### Create the spine service
 
 ```yaml

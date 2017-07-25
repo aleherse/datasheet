@@ -46,17 +46,18 @@ class ColumnFactory
 
     public function create(array $config, string $title)
     {
-        $field  = $config['field'] ?? null;
-        $option = $config['option'] ?? null;
+        $field    = $config['field'] ?? null;
+        $option   = $config['option'] ?? null;
+        $readOnly = $config['read_only'] ?? null;
 
         if (isset($this->types[$config['type']])) {
-            return new Column($this->types[$config['type']], $title, $field, $option);
+            return new Column($this->types[$config['type']], $title, $field, $option, $readOnly);
         }
 
         if ('->' === substr($config['type'], 0, 2)) {
-            return new Column(new ObjectValueColumn(substr($config['type'], 2), $option), $title, $field);
+            return new Column(new ObjectValueColumn(substr($config['type'], 2), $option), $title, $field, null, $readOnly);
         }
 
-        return new Column($this->types['string'], $title, $field, $option);
+        return new Column($this->types['string'], $title, $field, $option, $readOnly);
     }
 }
