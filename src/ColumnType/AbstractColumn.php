@@ -27,7 +27,7 @@ abstract class AbstractColumn
         $this->dbType   = $dbType;
     }
 
-    public function render(\Twig_Environment $twig, $columnId, $spineId, $content, $option = null)
+    public function render(\Twig_Environment $twig, $columnId, $spineId, $content, $option = null, bool $readOnly = false)
     {
         return $twig->render(
             $this->template,
@@ -35,6 +35,7 @@ abstract class AbstractColumn
                 'columnId' => $columnId,
                 'spineId'  => $spineId,
                 'content'  => $content,
+                'readOnly' => $readOnly
             ]
         );
     }
@@ -44,7 +45,7 @@ abstract class AbstractColumn
         return $this->dbType;
     }
 
-    public function castCellContent(?string $content, $option = null)
+    public function castCellContent(string $content, $option = null)
     {
         $content = trim($content);
 

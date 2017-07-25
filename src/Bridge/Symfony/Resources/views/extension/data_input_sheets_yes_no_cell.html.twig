@@ -1,7 +1,11 @@
 {% spaceless %}
-    <select class="data-input-sheet-input" name="{{ constant('Arkschools\\DataInputSheets\\View::FORM_NAME') }}[{{ spineId }}][{{ columnId }}]">
-        <option value="" {% if content is not same as(true) and content is not same as(false) %}selected{% endif %}></option>
-        <option value="Y" {% if content is same as(true) %}selected{% endif %}>Yes</option>
-        <option value="N" {% if content is same as(false) %}selected{% endif %}>No</option>
-    </select>
+    {% if readOnly %}
+        {% if content is same as(true) %}Yes{% elseif content is same as(false) %}No{% endif %}
+    {% else %}
+        <select class="data-input-sheet-input" name="{{ constant('Arkschools\\DataInputSheets\\View::FORM_NAME') }}[{{ spineId }}][{{ columnId }}]">
+            <option value="" {% if content is not same as(true) and content is not same as(false) %}selected{% endif %}></option>
+            <option value="Y" {% if content is same as(true) %}selected{% endif %}>Yes</option>
+            <option value="N" {% if content is same as(false) %}selected{% endif %}>No</option>
+        </select>
+    {% endif %}
 {% endspaceless %}

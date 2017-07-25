@@ -38,13 +38,19 @@ class Column
      */
     private $option;
 
-    public function __construct(AbstractColumn $columnType, string $title, ?string $field = null, $option = null)
+    /**
+     * @var bool
+     */
+    private $readOnly;
+
+    public function __construct(AbstractColumn $columnType, string $title, string $field = null, $option = null, bool $readOnly = false)
     {
         $this->id         = \slugifier\slugify($title);
         $this->columnType = $columnType;
         $this->title      = $title;
         $this->field      = $field;
         $this->option     = $option;
+        $this->readOnly   = $readOnly;
     }
 
     public function getId(): string
@@ -79,7 +85,7 @@ class Column
 
     public function render(\Twig_Environment $twig, $columnId, $spineId, $content): string
     {
-        return $this->columnType->render($twig, $columnId, $spineId, $content, $this->option);
+        return $this->columnType->render($twig, $columnId, $spineId, $content, $this->option, $this->readOnly);
     }
 
     public function isValueColumn(): bool
@@ -95,5 +101,10 @@ class Column
     public function getValue($object): string
     {
         return $this->columnType->getValue($object);
+    }
+
+    public function isReadOnly(): bool
+    {
+        return $this->readOnly;
     }
 }

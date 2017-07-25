@@ -318,11 +318,7 @@ class View
                 foreach ($columnsData as $columnId => $content) {
                     $column = $this->getColumn($columnId);
 
-                    if (null === $column) {
-                        continue;
-                    }
-
-                    if (!$column->isStored()) {
+                    if (null === $column || !$column->isStored() || $column->isReadOnly()) {
                         continue;
                     }
 

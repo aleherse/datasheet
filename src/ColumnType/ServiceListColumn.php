@@ -26,7 +26,7 @@ class ServiceListColumn extends AbstractColumn
         );
     }
 
-    public function render(\Twig_Environment $twig, $columnId, $spineId, $content, $option = null)
+    public function render(\Twig_Environment $twig, $columnId, $spineId, $content, $option = null, bool $readOnly = false)
     {
         [$service, $method] = $option;
 
@@ -41,6 +41,7 @@ class ServiceListColumn extends AbstractColumn
                 'spineId'  => $spineId,
                 'content'  => $content,
                 'list'     => array_keys($this->lists[$service][$method]),
+                'readOnly' => $readOnly
             ]
         );
     }
