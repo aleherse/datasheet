@@ -4,7 +4,7 @@ namespace Arkschools\DataInputSheets\Bridge\Symfony\Twig;
 
 use Arkschools\DataInputSheets\View;
 
-class DataInputSheetsCellExtension extends \Twig_Extension
+class DataInputSheetsExtension extends \Twig_Extension
 {
     /**
      * @return \Twig_SimpleFunction[]
@@ -15,6 +15,14 @@ class DataInputSheetsCellExtension extends \Twig_Extension
             new \Twig_SimpleFunction(
                 'dataInputSheetCell',
                 [$this, 'dataInputSheetCell'],
+                [
+                    'is_safe'           => ['html'],
+                    'needs_environment' => true,
+                ]
+            ),
+            new \Twig_SimpleFunction(
+                'dataInputSheetSelector',
+                [$this, 'dataInputSheetSelector'],
                 [
                     'is_safe'           => ['html'],
                     'needs_environment' => true,
@@ -34,8 +42,13 @@ class DataInputSheetsCellExtension extends \Twig_Extension
         return $column->render($twig, $columnId, $spineId, $view->getContent($spineId, $columnId));
     }
 
+    public function dataInputSheetSelector(\Twig_Environment $twig, View $view)
+    {
+        return $view->renderSelector($twig);
+    }
+
     public function getName(): string
     {
-        return 'dataInputSheetCell';
+        return 'dataInputSheet';
     }
 }

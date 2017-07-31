@@ -51,6 +51,7 @@ class Configuration implements ConfigurationInterface
                 ->arrayNode('sheets')
                     ->prototype('array')
                         ->children()
+                            ->scalarNode('selector')->defaultValue(null)->end()
                             ->arrayNode('views')
                                 ->prototype('array')
                                     ->children()

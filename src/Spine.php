@@ -90,6 +90,7 @@ class Spine
             $this->spineObjects = [];
 
             // Query spine objects using $this->filters
+            $this->filtersChanged = false;
 
             asort($this->spine);
         }
@@ -114,6 +115,12 @@ class Spine
         }
 
         $this->filters = $filters;
+    }
+
+
+    public function getFilters(): array
+    {
+        return $this->filters;
     }
 
     /**

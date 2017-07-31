@@ -2,7 +2,10 @@ parameters:
     data_input_sheets.entity_manager_name: default
 
 services:
-    arkschools.twig.data_input_sheets_cell:
-        class: Arkschools\DataInputSheets\Bridge\Symfony\Twig\DataInputSheetsCellExtension
+    arkschools.twig.data_input_sheets:
+        class: Arkschools\DataInputSheets\Bridge\Symfony\Twig\DataInputSheetsExtension
         tags:
             - { name: twig.extension }
+
+    arkschools.factory.data_input_sheets_selector:
+        class: Arkschools\DataInputSheets\SelectorFactory
