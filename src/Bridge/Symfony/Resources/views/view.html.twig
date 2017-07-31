@@ -10,30 +10,34 @@
         </div>
     {% endfor %}
 
-    <form name="data-input-sheet-form" method="post">
-        <table id="data-input-sheet-table" class="table table-nonfluid">
-            <thead>
-            <tr>
-                <th>{{ view.spineHeader }}</th>
-                {% for column in view.visibleColumns %}
-                    <th>{{ column.title }}</th>
-                {% endfor %}
-            </tr>
-            </thead>
-            <tbody>
-            {% for spineId, spineRow in view.spine %}
+    {% if view.isSelectionRequired %}
+        {{ dataInputSheetSelector(view) }}
+    {% else %}
+        <form name="data-input-sheet-form" method="post">
+            <table id="data-input-sheet-table" class="table table-nonfluid">
+                <thead>
                 <tr>
-                    <td><a href="{{ path('data_input_sheets_edit', {'sheetId': view.sheetId, 'viewId': view.id, 'position': loop.index0}) }}">{{ spineRow }}</a></td>
-                    <td>{{ spineRow }}</td>
+                    <th>{{ view.spineHeader }}</th>
                     {% for column in view.visibleColumns %}
-                        <td class="center">
-                            {{ dataInputSheetCell(view, column.id, spineId) }}
-                        </td>
+                        <th>{{ column.title }}</th>
                     {% endfor %}
                 </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-        <button type="submit" class="btn btn-success" value="Save">Save</button>
-    </form>
+                </thead>
+                <tbody>
+                {% for spineId, spineRow in view.spine %}
+                    <tr>
+                        <td><a href="{{ path('data_input_sheets_edit', app.request.query.all|merge({'sheetId': view.sheetId, 'viewId': view.id, 'position': loop.index0})) }}">{{ spineRow }}</a></td>
+                        <td>{{ spineRow }}</td>
+                        {% for column in view.visibleColumns %}
+                            <td class="center">
+                                {{ dataInputSheetCell(view, column.id, spineId) }}
+                            </td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <button type="submit" class="btn btn-success" value="Save">Save</button>
+        </form>
+    {% endif %}
 </div>

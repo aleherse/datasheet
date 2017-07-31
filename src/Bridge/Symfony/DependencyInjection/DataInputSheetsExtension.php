@@ -43,6 +43,7 @@ class DataInputSheetsExtension extends Extension
                     [
                         new Reference('doctrine'),
                         new Reference('arkschools.factory.data_input_sheets_column'),
+                        new Reference('arkschools.factory.data_input_sheets_selector'),
                         $config['sheets'],
                         new Parameter('data_input_sheets.entity_manager_name'),
                     ]

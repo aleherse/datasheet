@@ -3,6 +3,7 @@
 namespace Arkschools\DataInputSheets;
 
 use Arkschools\DataInputSheets\Bridge\Symfony\Entity\Cell;
+use Arkschools\DataInputSheets\Selector\AbstractSelector;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Symfony\Component\HttpFoundation\Request;
@@ -72,12 +73,18 @@ class View
     private $useCustomTable = false;
 
     /**
-     * @param string   $sheetId
-     * @param string   $title
-     * @param Spine    $spine
-     * @param array    $spineFilter
+     * @var AbstractSelector
+     */
+    private $selector;
+
+    /**
+     * @param string $sheetId
+     * @param string $title
+     * @param Spine $spine
+     * @param array $spineFilter
      * @param Column[] $columns
      * @param string[] $hiddenColumns
+     * @param AbstractSelector|null $selector
      */
     public function __construct(
         string $sheetId,
@@ -85,13 +92,16 @@ class View
         Spine $spine,
         array $spineFilter,
         array $columns,
-        array $hiddenColumns = []
-    ) {
-        $this->sheetId = $sheetId;
-        $this->id      = \slugifier\slugify($title);
-        $this->title   = $title;
-        $this->spine   = $spine;
-        $this->filters = $spineFilter;
+        array $hiddenColumns = [],
+        AbstractSelector $selector = null
+    )
+    {
+        $this->sheetId  = $sheetId;
+        $this->id       = \slugifier\slugify($title);
+        $this->title    = $title;
+        $this->spine    = $spine;
+        $this->filters  = $spineFilter;
+        $this->selector = $selector;
 
         $this->useExternalEntity = false;
 
@@ -163,7 +173,8 @@ class View
     private function filteredSpine(): Spine
     {
         if (!$this->filtersApplied) {
-            $this->spine->setFilters($this->filters);
+            $selectorFilters = $this->selector ? $this->selector->getFilters() : [];
+            $this->spine->setFilters(array_merge($this->filters, $selectorFilters));
             $this->filtersApplied = true;
         }
 
@@ -405,5 +416,42 @@ class View
             ->setParameter('columns', $columns);
 
         return $query->getQuery()->execute();
+    }
+
+    public function isSelectionRequired(): bool
+    {
+        if (null === $this->selector) {
+            return false;
+        }
+
+        return $this->selector->isRequired();
+    }
+
+    public function applySelection(Request $request)
+    {
+        if (null === $this->selector) {
+            return;
+        }
+
+        $changed              = $this->selector->applyFilters($request);
+        $this->filtersApplied = $this->filtersApplied && !$changed;
+    }
+
+    public function renderSelector(\Twig_Environment $twig): string
+    {
+        if (null === $this->selector) {
+            return '';
+        }
+
+        return $this->selector->render($twig, $this->filteredSpine()->getFilters());
+    }
+
+    public function getSelectorFilters()
+    {
+        if (null === $this->selector) {
+            return [];
+        }
+
+        return $this->selector->getFilters();
     }
 }

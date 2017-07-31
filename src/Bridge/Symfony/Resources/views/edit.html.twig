@@ -10,7 +10,7 @@
         </div>
     {% endfor %}
 
-    <form name="data-input-sheet-form" method="post">
+    <form name="data-input-sheet-form" method="post" action="{{ path('data_input_sheets_edit', app.request.query.all|merge({'sheetId': view.sheetId, 'viewId': view.id, 'position': position})) }}">
         <table id="data-input-sheet-table" class="table table-nonfluid">
             <thead>
             <tr>
@@ -29,7 +29,8 @@
         </table>
         <br/>
         {%  if position > 0 %}<div><button type="submit" class="btn btn-success" name="submit" value="Previous">Save & Previous</button></div>{% endif %}
-        <div><a class="btn btn-success" href="{{ path('data_input_sheets_view', {'sheetId': view.sheetId, 'viewId': view.id}) }}">Cancel & Back</a></div>
+        <div><button type="submit" class="btn btn-success" name="submit" value="Back">Save & Back</button></div>
+        <div><a class="btn btn-danger" href="{{ path('data_input_sheets_view', app.request.query.all|merge({'sheetId': view.sheetId, 'viewId': view.id})) }}">Cancel & Back</a></div>
         {%  if position < view.count - 1 %}<div><button type="submit" class="btn btn-success" name="submit" value="Next">Save & Next</button></div>{% endif %}
     </form>
 </div>

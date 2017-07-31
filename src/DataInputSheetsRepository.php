@@ -32,11 +32,23 @@ class DataInputSheetsRepository
      */
     private $columnFactory;
 
-    public function __construct(ManagerRegistry $registry, ColumnFactory $columnFactory, array $config, ?string $entityManagerName = null)
+    /**
+     * @var SelectorFactory
+     */
+    private $selectorFactory;
+
+    public function __construct(
+        ManagerRegistry $registry,
+        ColumnFactory $columnFactory,
+        SelectorFactory $selectorFactory,
+        array $config,
+        string $entityManagerName = null
+    )
     {
-        $this->em            = $registry->getManager($entityManagerName);
-        $this->columnFactory = $columnFactory;
-        $this->config        = $config;
+        $this->em              = $registry->getManager($entityManagerName);
+        $this->columnFactory   = $columnFactory;
+        $this->selectorFactory = $selectorFactory;
+        $this->config          = $config;
     }
 
     public function addSpine(Spine $spine, string $sheetId): void
@@ -51,10 +63,15 @@ class DataInputSheetsRepository
             $columns[$columnTitle] = $this->columnFactory->create($columnConfig, $columnTitle);
         }
 
+        $selector = null;
+        if (null !== $this->config[$sheetId]['selector']) {
+            $selector = $this->selectorFactory->create($this->config[$sheetId]['selector']);
+        }
+
         $views = [];
 
         foreach ($this->config[$sheetId]['views'] as $viewTitle => $viewColumn) {
-            $viewColumns = [];
+            $viewColumns     = [];
             $hiddenColumnIds = [];
 
             foreach ($viewColumn['columns'] as $viewColumnData) {
@@ -69,14 +86,23 @@ class DataInputSheetsRepository
                     );
                 }
 
-                $column = $columns[$viewColumnData['column']];
+                $column        = $columns[$viewColumnData['column']];
                 $viewColumns[] = $column;
                 if ($viewColumnData['hide']) {
                     $hiddenColumnIds[$column->getId()] = true;
                 }
             }
 
-            $view                           = new View($sheetId, $viewTitle, $spine, $viewColumn['filters'], $viewColumns, $hiddenColumnIds);
+            $view = new View(
+                $sheetId,
+                $viewTitle,
+                $spine,
+                $viewColumn['filters'],
+                $viewColumns,
+                $hiddenColumnIds,
+                $selector
+            );
+
             $viewId                         = $view->getId();
             $this->views[$sheetId][$viewId] = $view;
             $views[$viewId]                 = $viewTitle;
