@@ -10,16 +10,17 @@ abstract class AbstractColumn
     const FLOAT = 2;
     const STRING = 3;
     const TEXT = 4;
+    const DATETIME = 5;
 
     /**
      * @var string
      */
-    private $template;
+    protected $template;
 
     /**
      * @var integer
      */
-    private $dbType;
+    protected $dbType;
 
     public function __construct($template, $dbType)
     {

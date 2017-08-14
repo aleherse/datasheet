@@ -35,7 +35,7 @@ class ServiceListColumn extends AbstractColumn
         }
 
         return $twig->render(
-            'DataInputSheetsBundle:extension:data_input_sheets_service_list_cell.html.twig',
+            $this->template,
             [
                 'columnId' => $columnId,
                 'spineId'  => $spineId,

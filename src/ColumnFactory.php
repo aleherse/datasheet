@@ -3,6 +3,7 @@
 namespace Arkschools\DataInputSheets;
 
 use Arkschools\DataInputSheets\ColumnType\AbstractColumn;
+use Arkschools\DataInputSheets\ColumnType\DateColumn;
 use Arkschools\DataInputSheets\ColumnType\FloatColumn;
 use Arkschools\DataInputSheets\ColumnType\GenderColumn;
 use Arkschools\DataInputSheets\ColumnType\IntegerColumn;
@@ -27,6 +28,7 @@ class ColumnFactory
             'float'       => new FloatColumn(),
             'string'      => new StringColumn(),
             'text'        => new TextColumn(),
+            'date'        => new DateColumn(),
             'gender'      => new GenderColumn(),
             'yes/no'      => new YesNoColumn(),
             'serviceList' => new ServiceListColumn($container),

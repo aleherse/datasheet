@@ -182,6 +182,18 @@ data_input_sheets:
 * Uses a textarea html element to capture the data
 * Stores the input value in the database as a string casting empty strings into null values
 
+### date
+
+* Uses an input html element to capture the data
+* Stores the input value in the database as a datetime object casting empty strings or malformed dates into null values
+* By default it uses PHP DateTime format `d/m/Y H:i` and shows to the user the hint `DD/MM/YYYY` these values can be changed through configuration like this
+
+```yaml
+    - column: 'Manufacturing Date'
+      type:   'date'
+      option: ['d/m/Y', 'DD/MM/YYYY']
+```
+
 ### yes/no
 
 * Uses a select element with options '' => '', Y' => yes and 'N' => no

@@ -7,11 +7,12 @@ use Arkschools\DataInputSheets\Column;
 class Cell
 {
     protected static $types = [
-        Column::BOOL    => 'contentBoolean',
-        Column::INTEGER => 'contentInteger',
-        Column::FLOAT   => 'contentFloat',
-        Column::STRING  => 'contentString',
-        Column::TEXT    => 'contentText',
+        Column::BOOL     => 'contentBoolean',
+        Column::INTEGER  => 'contentInteger',
+        Column::FLOAT    => 'contentFloat',
+        Column::STRING   => 'contentString',
+        Column::TEXT     => 'contentText',
+        Column::DATETIME => 'contentDate',
     ];
 
     /**
@@ -58,6 +59,11 @@ class Cell
      * @var string
      */
     protected $contentText;
+
+    /**
+     * @var \DateTime
+     */
+    protected $contentDate;
 
     /**
      * @param string $sheet
