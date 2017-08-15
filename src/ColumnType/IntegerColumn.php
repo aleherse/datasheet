@@ -4,6 +4,8 @@ namespace Arkschools\DataInputSheets\ColumnType;
 
 class IntegerColumn extends AbstractColumn
 {
+    const INPUT_SIZE = 15;
+
     public function __construct()
     {
         parent::__construct(

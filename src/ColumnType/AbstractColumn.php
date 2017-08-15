@@ -11,6 +11,8 @@ abstract class AbstractColumn
     const STRING = 3;
     const TEXT = 4;
     const DATETIME = 5;
+    //
+    const INPUT_SIZE = 60;
 
     /**
      * @var string
@@ -36,7 +38,8 @@ abstract class AbstractColumn
                 'columnId' => $columnId,
                 'spineId'  => $spineId,
                 'content'  => $content,
-                'readOnly' => $readOnly
+                'readOnly' => $readOnly,
+                'size'     => static::INPUT_SIZE
             ]
         );
     }
