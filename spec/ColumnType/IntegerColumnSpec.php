@@ -2,12 +2,11 @@
 
 namespace spec\Arkschools\DataInputSheets\ColumnType;
 
-use Arkschools\DataInputSheets\Column;
 use Arkschools\DataInputSheets\ColumnType\AbstractColumn;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
-class StringColumnSpec extends ObjectBehavior
+class IntegerColumnSpec extends ObjectBehavior
 {
     function it_extends_column()
     {
@@ -16,13 +15,14 @@ class StringColumnSpec extends ObjectBehavior
 
     function it_has_a_DB_type()
     {
-        $this->getDBType()->shouldReturn(AbstractColumn::STRING);
+        $this->getDBType()->shouldReturn(AbstractColumn::INTEGER);
     }
 
     function it_cast_the_column_value_to_a_proper_type()
     {
-        $this->castCellContent('Lexus')->shouldReturn('Lexus');
+        $this->castCellContent('4400')->shouldReturn(4400);
         $this->castCellContent('')->shouldReturn(null);
+        $this->castCellContent('wrong')->shouldReturn(0);
     }
 
     function it_check_if_the_column_has_a_value_that_need_to_be_retrieved_from_an_object()
@@ -45,14 +45,14 @@ class StringColumnSpec extends ObjectBehavior
         $twig->render(
             'DataInputSheetsBundle:extension:data_input_sheets_input_text_cell.html.twig',
             [
-                'columnId' => 'brand',
+                'columnId' => 'car-length',
                 'spineId'  => 'lexus-is-200',
-                'content'  => 'Lexus',
+                'content'  => 4400,
                 'readOnly' => false,
-                'size'     => 60
+                'size'     => 15
             ]
         )->shouldBeCalled();
 
-        $this->render($twig, 'brand', 'lexus-is-200', 'Lexus');
+        $this->render($twig, 'car-length', 'lexus-is-200', 4400);
     }
 }

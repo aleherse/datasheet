@@ -29,7 +29,6 @@ class ColumnFactory
             'string'      => new StringColumn(),
             'text'        => new TextColumn(),
             'date'        => new DateColumn(),
-            'gender'      => new GenderColumn(),
             'yes/no'      => new YesNoColumn(),
             'serviceList' => new ServiceListColumn($container),
         ];
@@ -50,7 +49,7 @@ class ColumnFactory
     {
         $field    = $config['field'] ?? null;
         $option   = $config['option'] ?? null;
-        $readOnly = $config['read_only'] ?? null;
+        $readOnly = $config['read_only'] ?? false;
 
         if (isset($this->types[$config['type']])) {
             return new Column($this->types[$config['type']], $title, $field, $option, $readOnly);

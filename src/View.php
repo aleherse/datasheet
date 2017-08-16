@@ -202,10 +202,10 @@ class View
      */
     public function hasHiddenColumns(): bool
     {
-        return count($this->columns) === count($this->visibleColumns);
+        return count($this->columns) !== count($this->visibleColumns);
     }
 
-    public function getColumn(string $columnId): Column
+    public function getColumn(string $columnId): ?Column
     {
         return (isset($this->columns[$columnId])) ? $this->columns[$columnId] : null;
     }
@@ -250,7 +250,7 @@ class View
         return $this->getContent($spineId, $columnId) !== $content;
     }
 
-    public function extractDataFromRequest(Request $request)
+    public function extractDataFromRequest(Request $request): array
     {
         return $request->request->get(self::FORM_NAME, []);
     }
@@ -427,7 +427,7 @@ class View
         return $this->selector->isRequired();
     }
 
-    public function applySelection(Request $request)
+    public function applySelection(Request $request): void
     {
         if (null === $this->selector) {
             return;
@@ -446,7 +446,7 @@ class View
         return $this->selector->render($twig, $this->filteredSpine()->getFilters());
     }
 
-    public function getSelectorFilters()
+    public function getSelectorFilters(): array
     {
         if (null === $this->selector) {
             return [];
