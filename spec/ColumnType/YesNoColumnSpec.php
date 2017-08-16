@@ -2,12 +2,11 @@
 
 namespace spec\Arkschools\DataInputSheets\ColumnType;
 
-use Arkschools\DataInputSheets\Column;
 use Arkschools\DataInputSheets\ColumnType\AbstractColumn;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
-class StringColumnSpec extends ObjectBehavior
+class YesNoColumnSpec extends ObjectBehavior
 {
     function it_extends_column()
     {
@@ -16,12 +15,16 @@ class StringColumnSpec extends ObjectBehavior
 
     function it_has_a_DB_type()
     {
-        $this->getDBType()->shouldReturn(AbstractColumn::STRING);
+        $this->getDBType()->shouldReturn(AbstractColumn::BOOL);
     }
 
     function it_cast_the_column_value_to_a_proper_type()
     {
-        $this->castCellContent('Lexus')->shouldReturn('Lexus');
+        $this->castCellContent('Y')->shouldReturn(true);
+        $this->castCellContent('Yes')->shouldReturn(true);
+        $this->castCellContent('n')->shouldReturn(false);
+        $this->castCellContent('NO')->shouldReturn(false);
+        $this->castCellContent('unknown')->shouldReturn(null);
         $this->castCellContent('')->shouldReturn(null);
     }
 
@@ -43,16 +46,16 @@ class StringColumnSpec extends ObjectBehavior
     function it_renders_the_form_element_to_capture_the_column_value(\Twig_Environment $twig)
     {
         $twig->render(
-            'DataInputSheetsBundle:extension:data_input_sheets_input_text_cell.html.twig',
+            'DataInputSheetsBundle:extension:data_input_sheets_yes_no_cell.html.twig',
             [
-                'columnId' => 'brand',
+                'columnId' => 'is-new',
                 'spineId'  => 'lexus-is-200',
-                'content'  => 'Lexus',
+                'content'  => true,
                 'readOnly' => false,
                 'size'     => 60
             ]
         )->shouldBeCalled();
 
-        $this->render($twig, 'brand', 'lexus-is-200', 'Lexus');
+        $this->render($twig, 'is-new', 'lexus-is-200', true);
     }
 }

@@ -25,6 +25,11 @@ class ObjectValueColumn extends AbstractColumn
         $this->arguments  = $arguments;
     }
 
+    public function castCellContent(?string $content, $option = null)
+    {
+        return null;
+    }
+
     public function isValueColumn(): bool
     {
         return true;

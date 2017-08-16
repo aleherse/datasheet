@@ -14,6 +14,22 @@ class YesNoColumn extends AbstractColumn
 
     public function castCellContent(?string $content, $option = null): ?bool
     {
-        return null != $content ? 'Y' === $content : null;
+        $content = parent::castCellContent($content);
+
+        if (null === $content) {
+            return null;
+        }
+
+        $content = strtolower($content);
+
+        if ('y' === $content || 'yes' === $content) {
+            return true;
+        }
+
+        if ('n' === $content || 'no' === $content) {
+            return false;
+        }
+
+        return null;
     }
 }

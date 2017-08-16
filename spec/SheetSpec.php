@@ -2,15 +2,13 @@
 
 namespace spec\Arkschools\DataInputSheets;
 
-use Arkschools\DataInputSheets\Spine;
-use Arkschools\DataInputSheets\View;
 use PhpSpec\ObjectBehavior;
 
 class SheetSpec extends ObjectBehavior
 {
     function let()
     {
-        $this->beConstructedWith('Cars', ['brand' => 'Car', 'drive' => 'Drive description']);
+        $this->beConstructedWith('cars', 'Cars', ['brand' => 'Car', 'drive' => 'Drive description']);
     }
 
     function it_has_an_id()

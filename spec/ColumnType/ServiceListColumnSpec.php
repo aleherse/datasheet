@@ -1,0 +1,63 @@
+<?php
+
+namespace spec\Arkschools\DataInputSheets\ColumnType;
+
+use Arkschools\DataInputSheets\Bridge\Symfony\Entity\CustomCell;
+use Arkschools\DataInputSheets\ColumnType\AbstractColumn;
+use Arkschools\DataInputSheets\Sheet;
+use PhpSpec\ObjectBehavior;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+
+class ServiceListColumnSpec extends ObjectBehavior
+{
+    function let(ContainerInterface $container, Sheet $sheet)
+    {
+        $sheet->getName()->willReturn(['Coupé', 'Sedan', 'SUV', 'Crossover']);
+        $container->get('service')->willReturn($sheet->getWrappedObject());
+
+        $this->beConstructedWith($container);
+    }
+
+    function it_extends_column()
+    {
+        $this->shouldBeAnInstanceOf(AbstractColumn::class);
+    }
+
+    function it_has_a_DB_type()
+    {
+        $this->getDBType()->shouldReturn(AbstractColumn::STRING);
+    }
+
+    function it_cast_the_column_value_to_a_proper_type()
+    {
+        $this->castCellContent('Sedan', ['service', 'getName'])->shouldReturn('Sedan');
+        $this->castCellContent('Unknown', ['service', 'getName'])->shouldReturn(null);
+        $this->castCellContent('', ['service', 'getName'])->shouldReturn(null);
+    }
+
+    function it_check_if_the_column_has_a_value_that_need_to_be_retrieved_from_an_object()
+    {
+        $this->isValueColumn()->shouldReturn(false);
+    }
+
+    function it_checks_if_column_value_needs_to_be_stored()
+    {
+        $this->isStored()->shouldReturn(true);
+    }
+
+    function it_renders_the_form_element_to_capture_the_column_value(\Twig_Environment $twig)
+    {
+        $twig->render(
+            'DataInputSheetsBundle:extension:data_input_sheets_service_list_cell.html.twig',
+            [
+                'columnId' => 'car-length',
+                'spineId'  => 'lexus-is-200',
+                'content'  => 'Sedan',
+                'list'     => ['Coupé', 'Sedan', 'SUV', 'Crossover'],
+                'readOnly' => false,
+            ]
+        )->shouldBeCalled();
+
+        $this->render($twig, 'car-length', 'lexus-is-200', 'Sedan', ['service', 'getName']);
+    }
+}

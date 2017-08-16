@@ -154,6 +154,16 @@ class Spine
     }
 
     /**
+     * @param string $spineId
+     *
+     * @return object
+     */
+    public function getSpineObject(string $spineId)
+    {
+        return $this->spineObjects[$spineId] ?? null;
+    }
+
+    /**
      * @param string $position
      *
      * @return string |null
@@ -217,10 +227,5 @@ class Spine
             ->createQueryBuilder()
             ->select('o')
             ->from($this->getEntity(), 'o');
-    }
-
-    public function getSpineObject(string $spineId)
-    {
-        return $this->spineObjects[$spineId];
     }
 }
