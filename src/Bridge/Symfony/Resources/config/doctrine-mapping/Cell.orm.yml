@@ -35,7 +35,7 @@ Arkschools\DataInputSheets\Bridge\Symfony\Entity\Cell:
       type: text
       column: value_text
       nullable: true
-    contentDateTime:
+    contentDate:
       type: datetime
       column: value_datetime
       nullable: true
