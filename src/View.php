@@ -321,6 +321,10 @@ class View
             $metadata = $em->getClassMetadata($entity);
 
             foreach ($data as $spineId => $columnsData) {
+                if (!$this->spine->hasSpine($spineId)) {
+                    continue;
+                }
+
                 $object  = $this->getObject($spineId, null, $metadata);
                 $persist = false;
 
@@ -352,6 +356,10 @@ class View
             }
 
             foreach ($data as $spineId => $columnsData) {
+                if (!$this->spine->hasSpine($spineId)) {
+                    continue;
+                }
+
                 foreach ($columnsData as $columnId => $content) {
                     if (!isset($this->columns[$columnId])) {
                         continue;
