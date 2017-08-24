@@ -347,7 +347,7 @@ class View
                 }
 
                 if ($persist) {
-                    $em->persist($object);
+                    $em->persist($em->merge($object));
                 }
             }
         } else {
