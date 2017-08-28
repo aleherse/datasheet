@@ -347,6 +347,10 @@ class View
                 }
 
                 if ($persist) {
+                    if (method_exists($object, 'processSpineId')) {
+                        $object->processSpineId();
+                    }
+
                     $em->persist($em->merge($object));
                 }
             }

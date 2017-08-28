@@ -49,7 +49,7 @@ abstract class AbstractColumn
         return $this->dbType;
     }
 
-    public function castCellContent(string $content, $option = null)
+    public function castCellContent($content, $option = null)
     {
         $content = trim($content);
 

@@ -14,7 +14,7 @@ class IntegerColumn extends AbstractColumn
         );
     }
 
-    public function castCellContent(?string $content, $option = null): ?int
+    public function castCellContent($content, $option = null): ?int
     {
         $content = parent::castCellContent($content, $option);
 

@@ -2,11 +2,20 @@
     {% if readOnly %}
         {{ content }}
     {% else %}
-        <select class="data-input-sheet-input" name="{{ constant('Arkschools\\DataInputSheets\\View::FORM_NAME') }}[{{ spineId }}][{{ columnId }}]">
-            <option value="" {% if content == '' %}selected{% endif %}></option>
+        {% if multiple %}
             {% for item in list %}
-                <option value="{{ item }}" {% if content == item %}selected{% endif %}>{{ item }}</option>
+                <label class="checkbox-inline">
+                    <input value="{{ item }}" name="{{ constant('Arkschools\\DataInputSheets\\View::FORM_NAME') }}[{{ spineId }}][{{ columnId }}][]" type="checkbox" {% if content[item] is defined %}checked="checked"{% endif %}/>
+                    {{ item }}
+                </label>
             {% endfor %}
-        </select>
+        {% else %}
+            <select class="data-input-sheet-input" name="{{ constant('Arkschools\\DataInputSheets\\View::FORM_NAME') }}[{{ spineId }}][{{ columnId }}]">
+                <option value="" {% if content == '' %}selected{% endif %}></option>
+                {% for item in list %}
+                    <option value="{{ item }}" {% if content == item %}selected{% endif %}>{{ item }}</option>
+                {% endfor %}
+            </select>
+        {% endif %}
     {% endif %}
 {% endspaceless %}

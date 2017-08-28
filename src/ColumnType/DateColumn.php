@@ -15,7 +15,7 @@ class DateColumn extends AbstractColumn
         );
     }
 
-    public function castCellContent(?string $content, $option = null): ?\DateTime
+    public function castCellContent($content, $option = null): ?\DateTime
     {
         $content = \DateTime::createFromFormat(self::dateFormat($option), parent::castCellContent($content, $option));
 
