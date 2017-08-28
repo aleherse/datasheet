@@ -12,7 +12,7 @@ class YesNoColumn extends AbstractColumn
         );
     }
 
-    public function castCellContent(?string $content, $option = null): ?bool
+    public function castCellContent($content, $option = null): ?bool
     {
         $content = parent::castCellContent($content);
 

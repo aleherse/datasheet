@@ -14,7 +14,7 @@ class FloatColumn extends AbstractColumn
         );
     }
 
-    public function castCellContent(?string $content, $option = null): ?float
+    public function castCellContent($content, $option = null): ?float
     {
         $content = parent::castCellContent($content, $option);
 

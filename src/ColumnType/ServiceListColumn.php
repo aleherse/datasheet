@@ -31,7 +31,11 @@ class ServiceListColumn extends AbstractColumn
         [$service, $method] = $option;
 
         if (!isset($this->lists[$service][$method])) {
-            $this->initialiseList($service, $method);
+            $this->initialiseList($service, $method, $option[2]['method'] ?? null);
+        }
+
+        if (is_array($content)) {
+            $content = array_flip($content);
         }
 
         return $twig->render(
@@ -41,12 +45,13 @@ class ServiceListColumn extends AbstractColumn
                 'spineId'  => $spineId,
                 'content'  => $content,
                 'list'     => array_keys($this->lists[$service][$method]),
-                'readOnly' => $readOnly
+                'readOnly' => $readOnly,
+                'multiple' => isset($option[2]['multiple']) ? true : false
             ]
         );
     }
 
-    public function castCellContent(?string $content, $option = null): ?string
+    public function castCellContent($content, $option = null)
     {
         if (null == $content) {
             return null;
@@ -55,18 +60,37 @@ class ServiceListColumn extends AbstractColumn
         [$service, $method] = $option;
 
         if (!isset($this->lists[$service][$method])) {
-            $this->initialiseList($service, $method);
+            $this->initialiseList($service, $method, $option[2]['method'] ?? null);
         }
 
-        if (!isset($this->lists[$service][$method][$content])) {
-            return null;
+        if (isset($option[2]['multiple']) ? true : false) {
+            foreach ($content as $key => $value) {
+                if (!isset($this->lists[$service][$method][$value])) {
+                    unset($content[$key]);
+                }
+            }
+        } else {
+            if (!isset($this->lists[$service][$method][$content])) {
+                return null;
+            }
         }
 
         return $content;
     }
 
-    private function initialiseList(string $service, string $method)
+    private function initialiseList(string $service, string $method, string $objectMethod = null)
     {
-        $this->lists[$service][$method] = array_flip($this->container->get($service)->$method());
+        $list = [];
+
+        if (null === $objectMethod) {
+            $list = $this->container->get($service)->$method();
+        } else {
+            $objects = $this->container->get($service)->$method();
+            foreach ($objects as $object) {
+                $list[] = $object->$objectMethod();
+            }
+        }
+
+        $this->lists[$service][$method] = array_flip($list);
     }
 }
