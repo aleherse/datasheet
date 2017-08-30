@@ -3,19 +3,14 @@
         {{ content }}
     {% else %}
         {% if multiple %}
-            {% for item in list %}
-                <label class="checkbox-inline">
-                    <input value="{{ item }}" name="{{ constant('Arkschools\\DataInputSheets\\View::FORM_NAME') }}[{{ spineId }}][{{ columnId }}][]" type="checkbox" {% if content[item] is defined %}checked="checked"{% endif %}/>
-                    {{ item }}
-                </label>
-            {% endfor %}
+            <select class="data-input-sheet-input multiple-selection" name="{{ constant('Arkschools\\DataInputSheets\\View::FORM_NAME') }}[{{ spineId }}][{{ columnId }}][]" multiple="multiple">
         {% else %}
             <select class="data-input-sheet-input" name="{{ constant('Arkschools\\DataInputSheets\\View::FORM_NAME') }}[{{ spineId }}][{{ columnId }}]">
                 <option value="" {% if content == '' %}selected{% endif %}></option>
-                {% for item in list %}
-                    <option value="{{ item }}" {% if content == item %}selected{% endif %}>{{ item }}</option>
-                {% endfor %}
-            </select>
         {% endif %}
+            {% for key, item in list %}
+                <option value="{{ key }}" {% if content[key] is defined or content == key %}selected{% endif %}>{{ item }}</option>
+            {% endfor %}
+        </select>
     {% endif %}
 {% endspaceless %}
