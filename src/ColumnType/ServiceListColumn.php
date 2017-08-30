@@ -31,7 +31,7 @@ class ServiceListColumn extends AbstractColumn
         [$service, $method] = $option;
 
         if (!isset($this->lists[$service][$method])) {
-            $this->initialiseList($service, $method, $option[2]['method'] ?? null);
+            $this->initialiseList($service, $method, $option);
         }
 
         if (is_array($content)) {
@@ -41,12 +41,13 @@ class ServiceListColumn extends AbstractColumn
         return $twig->render(
             $this->template,
             [
-                'columnId' => $columnId,
-                'spineId'  => $spineId,
-                'content'  => $content,
-                'list'     => array_keys($this->lists[$service][$method]),
-                'readOnly' => $readOnly,
-                'multiple' => isset($option[2]['multiple']) ? true : false
+                'columnId'      => $columnId,
+                'spineId'       => $spineId,
+                'content'       => $content,
+                'list'          => $this->lists[$service][$method],
+                'readOnly'      => $readOnly,
+                'multiple'      => isset($option[2]['multiple']) && $option[2]['multiple'],
+                'useKeyAsValue' => isset($option[2]['useKeyAsValue']) && $option[2]['useKeyAsValue']
             ]
         );
     }
@@ -60,12 +61,12 @@ class ServiceListColumn extends AbstractColumn
         [$service, $method] = $option;
 
         if (!isset($this->lists[$service][$method])) {
-            $this->initialiseList($service, $method, $option[2]['method'] ?? null);
+            $this->initialiseList($service, $method, $option);
         }
 
-        if (isset($option[2]['multiple']) ? true : false) {
-            foreach ($content as $key => $value) {
-                if (!isset($this->lists[$service][$method][$value])) {
+        if (isset($option[2]['multiple']) && $option[2]['multiple']) {
+            foreach ($content as $key) {
+                if (!isset($this->lists[$service][$method][$key])) {
                     unset($content[$key]);
                 }
             }
@@ -78,19 +79,32 @@ class ServiceListColumn extends AbstractColumn
         return $content;
     }
 
-    private function initialiseList(string $service, string $method, string $objectMethod = null)
+    private function initialiseList(string $service, string $method, array $options = null)
     {
-        $list = [];
+        $list          = [];
+        $objectMethod  = $options[2]['method'] ?? null;
+        $keyMethod     = $options[2]['key'] ?? null;
+        $useKeyAsValue = $options[2]['useKeyAsValue'] ?? false;
 
         if (null === $objectMethod) {
             $list = $this->container->get($service)->$method();
+            if (!$useKeyAsValue) {
+                $list = array_combine($list, $list);
+            }
         } else {
             $objects = $this->container->get($service)->$method();
-            foreach ($objects as $object) {
-                $list[] = $object->$objectMethod();
+            if ($useKeyAsValue && null !== $keyMethod) {
+                foreach ($objects as $object) {
+                    $list[$object->$keyMethod()] = $object->$objectMethod();
+                }
+            } else {
+                foreach ($objects as $object) {
+                    $value = $object->$objectMethod();
+                    $list[$value] = $value;
+                }
             }
         }
 
-        $this->lists[$service][$method] = array_flip($list);
+        $this->lists[$service][$method] = $list;
     }
 }
