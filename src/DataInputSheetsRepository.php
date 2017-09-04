@@ -4,7 +4,7 @@ namespace Arkschools\DataInputSheets;
 
 use Arkschools\DataInputSheets\Security\SheetAccessVoter;
 use Doctrine\Common\Persistence\ManagerRegistry;
-use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class DataInputSheetsRepository
@@ -25,7 +25,7 @@ class DataInputSheetsRepository
     private $config;
 
     /**
-     * @var EntityManager
+     * @var EntityManagerInterface
      */
     private $em;
 
@@ -150,14 +150,7 @@ class DataInputSheetsRepository
 
     public function findViewBy(string $sheetId, string $viewId): ?View
     {
-        if (!isset($this->sheets[$sheetId])) {
-            return null;
-        }
-        if (!$this->isGranted($this->sheets[$sheetId])) {
-            return null;
-        }
-
-        if (!isset($this->views[$sheetId][$viewId])) {
+        if (!$this->hasView($sheetId, $viewId)) {
             return null;
         }
 
@@ -166,10 +159,31 @@ class DataInputSheetsRepository
         return $view->loadContent($this->em);
     }
 
+    public function hasView(string $sheetId, string $viewId): bool
+    {
+        if (!isset($this->sheets[$sheetId])) {
+            return false;
+        }
+        if (!$this->isGranted($this->sheets[$sheetId])) {
+            return false;
+        }
+
+        if (!isset($this->views[$sheetId][$viewId])) {
+            return false;
+        }
+
+        return true;
+    }
+
     public function save(View $view, array $data): void
     {
         $view->persist($this->em, $data);
 
         $this->em->flush();
+    }
+
+    public function remove(View $view, $position): bool
+    {
+        return $view->remove($this->em, $position);
     }
 }

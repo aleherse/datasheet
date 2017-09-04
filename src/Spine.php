@@ -2,7 +2,7 @@
 
 namespace Arkschools\DataInputSheets;
 
-use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class Spine
@@ -89,13 +89,17 @@ class Spine
             $this->spine        = [];
             $this->spineObjects = [];
 
-            // Query spine objects using $this->filters
-            $this->filtersChanged = false;
+            $this->query();
 
-            asort($this->spine);
+            $this->filtersChanged = false;
         }
 
         return $this;
+    }
+
+    protected function query()
+    {
+        // Query spine objects using $this->filters and sort if needed
     }
 
     /**
@@ -171,9 +175,14 @@ class Spine
     public function getSpineIdFromPosition($position)
     {
         $iterator = new \ArrayIterator($this->load()->spine);
-        $iterator->seek($position);
 
-        return ($iterator->valid()) ? $iterator->key() : null;
+        try {
+            $iterator->seek($position);
+        } catch (\OutOfBoundsException $e) {
+            return null;
+        }
+
+        return $iterator->key();
     }
 
     /**
@@ -217,11 +226,11 @@ class Spine
     /**
      * Extend this method if you want to filter your own entity query
      *
-     * @param EntityManager $em
+     * @param EntityManagerInterface $em
      *
      * @return \Doctrine\ORM\QueryBuilder
      */
-    public function getQueryBuilder(EntityManager $em)
+    public function getQueryBuilder(EntityManagerInterface $em)
     {
         return $em
             ->createQueryBuilder()
