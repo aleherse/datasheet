@@ -2,8 +2,10 @@
 
 namespace Arkschools\DataInputSheets;
 
+use Arkschools\DataInputSheets\Security\SheetAccessVoter;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\EntityManager;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class DataInputSheetsRepository
 {
@@ -37,10 +39,16 @@ class DataInputSheetsRepository
      */
     private $selectorFactory;
 
+    /**
+     * @var AuthorizationCheckerInterface
+     */
+    private $authorization;
+
     public function __construct(
         ManagerRegistry $registry,
         ColumnFactory $columnFactory,
         SelectorFactory $selectorFactory,
+        AuthorizationCheckerInterface $authorizationChecker,
         array $config,
         string $entityManagerName = null
     )
@@ -49,6 +57,7 @@ class DataInputSheetsRepository
         $this->columnFactory   = $columnFactory;
         $this->selectorFactory = $selectorFactory;
         $this->config          = $config;
+        $this->authorization   = $authorizationChecker;
     }
 
     public function addSpine(Spine $spine, string $sheetId): void
@@ -108,7 +117,7 @@ class DataInputSheetsRepository
             $views[$viewId]                 = $viewTitle;
         }
 
-        $this->sheets[$sheetId] = new Sheet($sheetId, $spine->getHeader(), $views);
+        $this->sheets[$sheetId] = new Sheet($sheetId, $spine->getHeader(), $views, $this->config[$sheetId]['users']);
     }
 
     /**
@@ -116,16 +125,38 @@ class DataInputSheetsRepository
      */
     public function findAll(): array
     {
-        return $this->sheets;
+        $sheets = [];
+
+        foreach ($this->sheets as $sheet) {
+            if ($this->isGranted($sheet)) {
+                $sheets[] = $sheet;
+            }
+        }
+
+        return $sheets;
+    }
+
+    private function isGranted(Sheet $sheet)
+    {
+        return $this->authorization->isGranted(SheetAccessVoter::ACCESS, $sheet);
     }
 
     public function findById(string $id): ?Sheet
     {
-        return (isset($this->sheets[$id])) ? $this->sheets[$id] : null;
+        return (isset($this->sheets[$id]) && $this->isGranted($this->sheets[$id]))
+            ? $this->sheets[$id]
+            : null;
     }
 
     public function findViewBy(string $sheetId, string $viewId): ?View
     {
+        if (!isset($this->sheets[$sheetId])) {
+            return null;
+        }
+        if (!$this->isGranted($this->sheets[$sheetId])) {
+            return null;
+        }
+
         if (!isset($this->views[$sheetId][$viewId])) {
             return null;
         }

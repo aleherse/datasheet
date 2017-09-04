@@ -13,7 +13,7 @@
     {% if view.isSelectionRequired %}
         {{ dataInputSheetSelector(view) }}
     {% else %}
-        <form name="data-input-sheet-form" method="post">
+        <form name="data-input-sheet-form" method="post" action="{{ path('data_input_sheets_view', app.request.query.all|merge({'sheetId': view.sheetId, 'viewId': view.id})) }}">
             <table id="data-input-sheet-table" class="table table-nonfluid">
                 <thead>
                 <tr>

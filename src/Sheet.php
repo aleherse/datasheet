@@ -20,23 +20,30 @@ class Sheet
     private $views;
 
     /**
+     * @var string[]
+     */
+    private $users;
+
+    /**
      * Sheet constructor.
      *
      * @param string $id
      * @param string $name
      * @param View[] $views
+     * @param string[] $users
      */
-    public function __construct($id, $name, array $views)
+    public function __construct($id, $name, array $views, array $users)
     {
-        $this->id        = $id;
-        $this->name      = $name;
-        $this->views     = $views;
+        $this->id    = $id;
+        $this->name  = $name;
+        $this->views = $views;
+        $this->users = $users;
     }
 
     /**
      * @return string
      */
-    public function getId()
+    public function getId(): string
     {
         return $this->id;
     }
@@ -44,7 +51,7 @@ class Sheet
     /**
      * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
@@ -52,8 +59,16 @@ class Sheet
     /**
      * @return string[]
      */
-    public function getViews()
+    public function getViews(): array
     {
         return $this->views;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getUsers(): array
+    {
+        return $this->users;
     }
 }
