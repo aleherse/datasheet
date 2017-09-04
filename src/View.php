@@ -237,12 +237,12 @@ class View
 
     public function hasSpine(string $spineId): bool
     {
-        return $this->spine->hasSpine($spineId);
+        return $this->filteredSpine()->hasSpine($spineId);
     }
 
     public function count(): int
     {
-        return $this->spine->count();
+        return $this->filteredSpine()->count();
     }
 
     private function contentChanged(string $spineId, string $columnId, $content): bool
@@ -321,7 +321,7 @@ class View
             $metadata = $em->getClassMetadata($entity);
 
             foreach ($data as $spineId => $columnsData) {
-                if (!$this->spine->hasSpine($spineId)) {
+                if (!$this->hasSpine($spineId)) {
                     continue;
                 }
 
@@ -360,7 +360,7 @@ class View
             }
 
             foreach ($data as $spineId => $columnsData) {
-                if (!$this->spine->hasSpine($spineId)) {
+                if (!$this->hasSpine($spineId)) {
                     continue;
                 }
 
