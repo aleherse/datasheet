@@ -4,7 +4,8 @@ namespace Arkschools\DataInputSheets;
 
 use Arkschools\DataInputSheets\Bridge\Symfony\Entity\Cell;
 use Arkschools\DataInputSheets\Selector\AbstractSelector;
-use Doctrine\ORM\EntityManager;
+use Doctrine\DBAL\Exception\DriverException;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -255,7 +256,7 @@ class View
         return $request->request->get(self::FORM_NAME, []);
     }
 
-    public function loadContent(EntityManager $em): View
+    public function loadContent(EntityManagerInterface $em): View
     {
         if ($this->useExternalEntity) {
             $entity = $this->spine->getEntity();
@@ -310,7 +311,7 @@ class View
         return $this;
     }
 
-    public function persist(EntityManager $em, array $data): void
+    public function persist(EntityManagerInterface $em, array $data): void
     {
         if ($this->useExternalEntity) {
             $entity = $this->spine->getEntity();
@@ -388,7 +389,36 @@ class View
         }
     }
 
-    private function setCustomTableName(EntityManager $em, string $class = null): void
+    public function remove(EntityManagerInterface $em, int $position)
+    {
+        $spineId = $this->getSpineIdFromPosition($position);
+        if (null === $spineId) {
+            return false;
+        }
+
+        if ($this->useExternalEntity) {
+            $entity = $this->spine->getEntity();
+        } else {
+            $entity = Cell::class;
+        }
+
+        if ($this->useCustomTable) {
+            $this->setCustomTableName($em, $entity);
+        }
+
+        try {
+            return $em->createQueryBuilder()
+                ->delete($entity, 'e')
+                ->where('e.' . $this->spine->getEntitySpineField() . ' = :spineId')
+                ->setParameter('spineId', $spineId)
+                ->getQuery()
+                ->execute();
+        } catch (DriverException $e) {
+            return false;
+        }
+    }
+
+    private function setCustomTableName(EntityManagerInterface $em, string $class = null): void
     {
         $em
             ->getClassMetadata($class ?? Cell::class)
@@ -396,11 +426,11 @@ class View
     }
 
     /**
-     * @param EntityManager $em
+     * @param EntityManagerInterface $em
      *
      * @return Bridge\Symfony\Entity\Cell[]
      */
-    private function getCells(EntityManager $em): array
+    private function getCells(EntityManagerInterface $em): array
     {
         $query = $em
             ->createQueryBuilder()
